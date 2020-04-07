@@ -1,5 +1,6 @@
 const state = {
-	buildings: {}
+	buildings: {},
+	selected: undefined
 }
 
 const mutations = {
@@ -9,6 +10,9 @@ const mutations = {
 	addBuilding(state, payload) {
 		state.buildings[payload.buildingName] = require(`../../assets/buildings/${payload.buildingName}.json`);
 	},
+	setSelected(state, selected) {
+		state.selected = selected;
+	}
 }
 
 const actions = {
@@ -20,6 +24,7 @@ const actions = {
 
 	init(context, payload) {
 		payload.buildings.forEach(buildingName => context.commit('addBuilding', { buildingName }));
+		context.commit('setSelected', payload.buildings[0]);
 	}
 }
 
@@ -34,6 +39,15 @@ const getters = {
 	},
 	ALL_BUILDINGS(state) {
 		return state.buildings;
+	},
+	SELECTED(state) {
+		return state.buildings[state.selected]
+	},
+	DIMENSIONS(state) {
+		return {
+			width: state.buildings[state.selected].width,
+			height: state.buildings[state.selected].height
+		}
 	}
 }
 

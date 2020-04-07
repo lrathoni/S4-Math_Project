@@ -1,5 +1,5 @@
 <template>
-	<div class="building-card-container">
+	<div @click="selectBuilding" class="building-card-container" :style="{ backgroundColor: backgroundColor }">
 		<div class="header">
 			<span>{{ buildingName }}</span>
 		</div>
@@ -39,7 +39,20 @@ export default {
 			buildingProps: Object
 		}
 	},
+	methods: {
+		selectBuilding() {
+			this.$store.commit('buildings/setSelected', this.building.id)
+		}
+	},
 	computed: {
+		backgroundColor() {
+			if (this.building.id == this.$store.getters['buildings/SELECTED'].id)
+				return "lightgreen";
+			else if (this.$store.getters['player/MONEY'] >= this.building.price)
+				return "white";
+			else
+				return "gray";
+		},
 		buildingName() {
 			return this.building.name;
 		},

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import buildings from './modules/buildings';
+import player from './modules/player';
 //import network from './modules/network';
 //import neuron from './modules/neuron';
 
@@ -8,8 +9,8 @@ Vue.use(Vuex);
 
 const state = {
 	board: {
-		width: 10,
-		height: 15
+		width: 12,
+		height: 8
 	},
 	selWidth: 1,
 	selHeight: 1,
@@ -23,21 +24,22 @@ const state = {
 			width: Number,
 			height: Number,
 			x: Number,
-			y: Number
+			y: Number,
+			building: {}
 		}*/
 	]
 }
 
 const mutations = {
 	addSquare(state, payload) {
-		const { name, width, height, x, y } = payload;
+		const { width, height, x, y, building } = payload;
 		state.squares.push({
 			id: state.selIndex,
-			name,
 			width,
 			height,
 			x,
-			y
+			y,
+			building
 		})
 	},
 	incrementIndex(state) {
@@ -58,19 +60,20 @@ const mutations = {
 }
 
 const actions = {
-	addSquareSel({ state, commit }, payload) {
+	addSquareSel(context, payload) {
 		//debugger
-		let { name, x, y } = payload;
-		name = name ? name : state.selName + toString(state.selIndex);
-		commit('addSquare', { name, width: state.selWidth, height: state.selHeight, x, y });
-		commit('incrementIndex');
+		let { x, y } = payload;
+		//name = name ? name : context.state.selName + toString(context.state.selIndex);
+		const building = context.getters['buildings/SELECTED'];
+		context.commit('addSquare', { width: context.state.selWidth, height: context.state.selHeight, x, y, building });
+		context.commit('incrementIndex');
 	}
 }
 
 function isOverlaping(squares, element) {
 	const squareOverlap = squares.some(square => {
 
-		/* IDEA: start of A must be located before end of B and end of A after start of B 
+		/* INFO start of A must be located before end of B and end of A after start of B 
 		 *    start
 		 *        +---------+
 		 *        |         |
@@ -82,9 +85,9 @@ function isOverlaping(squares, element) {
 		 */
 
 		if (
-			element.x + element.width - 1 >= square.x && element.x <= square.x + square.width - 1
+			element.x + element.dimensions.width - 1 >= square.x && element.x <= square.x + square.width - 1
 				&& 
-			element.y + element.height - 1 >= square.y && element.y <= square.y + square.height - 1 
+			element.y + element.dimensions.height - 1 >= square.y && element.y <= square.y + square.height - 1 
 		)	return true;
 		else return false;
 	});
@@ -93,16 +96,19 @@ function isOverlaping(squares, element) {
 }
 
 const getters = {
-	IS_CONSTRUCTIBLE: (state) => (x, y) => {
-		if ((x + state.selWidth - 1) > state.board.width)
-			return false;
-		else if ((y + state.selHeight - 1) > state.board.height)
-			return false;
-		else {
-			if (isOverlaping(state.squares, { width: state.selWidth, height: state.selHeight, x, y }))
+	IS_CONSTRUCTIBLE(state, getters) {
+		const dimensions = getters['buildings/DIMENSIONS'];
+		return (x, y) => {
+			if ((x + dimensions.width - 1) > state.board.width)
 				return false;
-			else return true;
-		}
+			else if ((y + dimensions.height - 1) > state.board.height)
+				return false;
+			else {
+				if (isOverlaping(state.squares, { dimensions, x, y }))
+					return false;
+				else return true;
+			}
+		} 
 	}
 }
 
@@ -112,7 +118,8 @@ export default new Vuex.Store({
 	actions,
 	getters,
 	modules: {
-		buildings
+		buildings,
+		player
 	}
 })
 

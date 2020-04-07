@@ -1,7 +1,7 @@
 <template>
 	<div @click.stop class="square-box-container" :style="computeTemplatePosition">
 		{{ num }}
-		<div class="square-content-container">
+		<div class="square-content-container" :style="backgroundImage">
 		</div>
 	</div>
 </template>
@@ -17,10 +17,17 @@ export default {
 		computeTemplatePosition() {
 			return {
 				gridColumnStart: this.square.x,
-				gridColumnEnd: this.square.x + this.square.width,
+				gridColumnEnd: this.square.x + this.square.building.width,
 				gridRowStart: this.square.y,
-				gridRowEnd: this.square.y + this.square.height,
+				gridRowEnd: this.square.y + this.square.building.height,
 			}
+		},
+		backgroundImage() {
+			const image = require('../assets/buildings/images/' + this.square.building.image);
+			return {
+				backgroundImage: `url(${image})`
+			}
+			//require('../assets/buildings/images/' + this.building.image);
 		}
 	}
 }
@@ -40,6 +47,7 @@ export default {
 		height: 120%;
 		position: absolute;
 		bottom: 0;
+		background-size: cover;
 
 		&:hover {
 			background-color: #FF000099;

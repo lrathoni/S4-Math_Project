@@ -2,6 +2,7 @@
   <div id="app">
 	  Width : <button @click="incrementSize('width', 1)">+</button><button @click="incrementSize('width', -1)">-</button>
 	  Height : <button @click="incrementSize('height', 1)">+</button><button @click="incrementSize('height', -1)">-</button>
+	  Money : {{ $store.getters['player/MONEY'] }} <input type="text" v-model="playerMoney">
 	  <Board />
 	  <div class="building-cards">
 			<BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
@@ -23,6 +24,14 @@ export default {
 		buildings() {
 			//console.log(Object.keys(this.$store.getters['buildings/ALL_BUILDINGS']));
 			return this.$store.getters['buildings/ALL_BUILDINGS'];
+		},
+		playerMoney: {
+			set(money) {
+				this.$store.commit('player/setMoney', money);
+			},
+			get() {
+				return this.$store.getters['player/MONEY'];
+			}
 		}
 	},
   	methods: {
@@ -32,7 +41,7 @@ export default {
 	},
 	beforeCreate() {
 		/* INFO initializing the available buildings */
-		this.$store.dispatch('buildings/init', { buildings: [ 'wheel', 'cinema' ] });
+		this.$store.dispatch('buildings/init', { buildings: [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ] });
 	}
 }
 </script>

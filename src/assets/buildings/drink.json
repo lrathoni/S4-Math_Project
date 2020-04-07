@@ -1,0 +1,12 @@
+{
+	"id": "drink",
+	"name": "Drinks and beverages",
+	"price": 200,
+	"happiness": 10,
+	"capacity": 22,
+	"build-time": 4,
+	"image": "drink.png",
+	"indoor": false,
+	"width": 1,
+	"height": 1
+}

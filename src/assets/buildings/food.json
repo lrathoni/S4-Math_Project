@@ -1,12 +1,12 @@
 {
-	"id": "cinema",
-	"name": "Cinecity",
+	"id": "food",
+	"name": "Snack",
 	"price": 150,
 	"happiness": 5,
 	"capacity": 200,
 	"build-time": 10,
-	"image": "cinema.png",
+	"image": "food.png",
 	"indoor": true,
-	"width": 2,
+	"width": 1,
 	"height": 2
 }

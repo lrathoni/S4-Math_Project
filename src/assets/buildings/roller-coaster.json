@@ -1,0 +1,12 @@
+{
+	"id": "roller-coaster",
+	"name": "Roller Coaster",
+	"price": 150,
+	"happiness": 5,
+	"capacity": 200,
+	"build-time": 10,
+	"image": "roller-coaster.png",
+	"indoor": true,
+	"width": 3,
+	"height": 3
+}
