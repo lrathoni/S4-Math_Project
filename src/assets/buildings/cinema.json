@@ -1,0 +1,13 @@
+{
+	"name": "Cinecity",
+	"price": 150,
+	"happiness": 5,
+	"capacity": 200,
+	"build-time": 10,
+	"image": "cinema.png",
+	"indoor": true,
+	"dimension": {
+		"width": 3,
+		"height": 3
+	}
+}

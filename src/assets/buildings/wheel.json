@@ -1,0 +1,13 @@
+{
+	"name": "Mega Wheel",
+	"price": 200,
+	"happiness": 10,
+	"capacity": 22,
+	"build-time": 4,
+	"image": "wheel.png",
+	"indoor": false,
+	"dimension": {
+		"width": 2,
+		"height": 2
+	}
+}
