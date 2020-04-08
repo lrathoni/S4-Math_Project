@@ -1,12 +1,12 @@
 <template>
-	<div @click="logClick" ref="container" class="board-container" >
+	<div @click="clickBoard" ref="container" class="board-container" >
 		<table ref="table" class="board-grid-container">
 			<tr v-for="(row, id) in $store.state.board.height" :key="id">
 				<td v-for="(columns, id) in $store.state.board.width" :key="id"></td>
 			</tr>
 		</table> 
 		<div class="board-elements-container" :style="computeGridTemplate">
-			<Square v-for="(square, id) in $store.state.squares" :square="square" :num="id" :key="id" />
+			<Square v-for="(square, id) in $store.state.board.squares" :square="square" :num="id" :key="id" />
 		</div>
 	</div>
 </template>
@@ -31,7 +31,7 @@ export default {
 		}
 	},
 	methods: {
-		logClick(event) {
+		clickBoard(event) {
 
 			/* NOTE computes the size of a square */
 			const { width, height } = this.$refs.container.getBoundingClientRect();
@@ -40,12 +40,15 @@ export default {
 			const squareHeight = height / this.$store.state.board.height;
 
 			/* NOTE computes the x and y position is board space */
-			const x = Math.trunc(layerX/squareWidth) + 1;
-			const y = Math.trunc(layerY/squareHeight) + 1;
+			const x = Math.trunc(layerX / squareWidth) + 1;
+			const y = Math.trunc(layerY / squareHeight) + 1;
+
+			const buildingWidth = this.$store.state.player.selected.width;
+			const buildingHeight = this.$store.state.player.selected.height;
 
 			/* NOTE check that it is possible to build */
-			if (this.$store.getters.IS_CONSTRUCTIBLE(x, y))
-				this.$store.dispatch('addSquareSel', { x, y });
+			if (this.$store.getters['board/IS_CONSTRUCTIBLE'](x, y, buildingWidth, buildingHeight))
+				this.$store.dispatch('board/addSquareSel', { x, y });
 		}
 	}
 }
@@ -57,12 +60,6 @@ export default {
    height: max-content;
    position: relative;
    margin: 70px auto;
-
-	/*> * {*/
-		/*width: 100%;*/
-		/*height: 100%;*/
-		/*position: absolute;*/
-	/*}*/
 
 	table {
 		margin: auto;

@@ -41,14 +41,14 @@ export default {
 	},
 	methods: {
 		selectBuilding() {
-			this.$store.commit('buildings/setSelected', this.building.id)
+			this.$store.commit('player/setSelected', this.building)
 		}
 	},
 	computed: {
 		backgroundColor() {
-			if (this.building.id == this.$store.getters['buildings/SELECTED'].id)
+			if (this.building.id == this.$store.state.player.selected.id)
 				return "lightgreen";
-			else if (this.$store.getters['player/MONEY'] >= this.building.price)
+			else if (this.$store.state.player.money >= this.building.price)
 				return "white";
 			else
 				return "gray";

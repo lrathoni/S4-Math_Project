@@ -44,7 +44,7 @@ export default {
 		border-radius: 15px;
 		background-color: #FF000022;
 		width: 100%;
-		height: 120%;
+		height: 110%;
 		position: absolute;
 		bottom: 0;
 		background-size: cover;

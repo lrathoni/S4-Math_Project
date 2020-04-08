@@ -1,8 +1,12 @@
 <template>
   <div id="app">
-	  Width : <button @click="incrementSize('width', 1)">+</button><button @click="incrementSize('width', -1)">-</button>
-	  Height : <button @click="incrementSize('height', 1)">+</button><button @click="incrementSize('height', -1)">-</button>
-	  Money : {{ $store.getters['player/MONEY'] }} <input type="text" v-model="playerMoney">
+	  <transition name="fade">
+	  	  <div v-show="$store.state.board.rain" class="weather-container">
+	  	  	  <img class="rain" src="/images/rain.gif" alt="">
+	  	  	  <img class="clouds" src="/images/cloud_texture.jpg" alt="">
+	  	  </div>
+	  </transition>
+	  Money : {{ $store.state.player.money }} <input type="text" v-model="playerMoney">
 	  <Board />
 	  <div class="building-cards">
 			<BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
@@ -23,26 +27,26 @@ export default {
   	computed: {
 		buildings() {
 			//console.log(Object.keys(this.$store.getters['buildings/ALL_BUILDINGS']));
-			return this.$store.getters['buildings/ALL_BUILDINGS'];
+			return this.$store.state.buildings.buildings;
 		},
 		playerMoney: {
 			set(money) {
 				this.$store.commit('player/setMoney', money);
 			},
 			get() {
-				return this.$store.getters['player/MONEY'];
+				return this.$store.state.player.money;
 			}
 		}
 	},
   	methods: {
-		incrementSize(type, amount) {
-			this.$store.commit('updateSize', { type, amount });
-		},
+		//incrementSize(type, amount) {
+			//this.$store.commit('updateSize', { type, amount });
+		//},
 	},
 	beforeCreate() {
 		/* INFO initializing the available buildings */
-		this.$store.dispatch('buildings/init', { buildings: [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ] });
-	}
+		this.$store.dispatch('init', { buildings: [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ] });
+	},
 }
 </script>
 
@@ -60,6 +64,33 @@ export default {
 		bottom: 0;
 		height: 230px;
 		display: flex;
+	}
+
+	.weather-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+
+		> img {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+
+			&.rain {
+				mix-blend-mode: color-burn;
+				opacity: .2;
+			}
+
+			&.clouds {
+				mix-blend-mode: multiply;
+			}
+		}
+
 	}
 }
 
@@ -86,5 +117,12 @@ body {
 		opacity: 0.6;
 
   	}
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 2.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
