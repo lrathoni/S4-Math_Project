@@ -1,14 +1,29 @@
 <template>
-	<div @click.stop class="square-box-container" :style="computeTemplatePosition">
-		{{ num }}
-		<div class="square-content-container" :style="backgroundImage">
+	<popper
+		trigger="clickToOpen"
+		:options="{
+				    placement: 'bottom',
+					 modifiers: { offset: { offset: '0,10px' } }
+					 }"
+		:style="computeTemplatePosition">
+		<div class="popper info-building">
+			<span class="title">{{ square.building.name }}</span>
+			dqdqdqzd {{ num }}
 		</div>
-	</div>
+		<div slot="reference" @click.stop class="square-box-container">
+			<div class="square-content-container" :style="backgroundImage"></div>
+		</div>
+	</popper>
 </template>
 
 <script>
+import Popper from 'vue-popperjs';
+
 export default {
 	name: 'Square',
+	components: {
+		popper: Popper
+	},
 	props: [
 		'num',
 		'square'
@@ -34,8 +49,23 @@ export default {
 </script>
 
 <style lang="less">
+@import '~vue-popperjs/dist/vue-popper.css';
+
+
+.popper.info-building {
+	padding: 10px 20px;
+	border-radius: 20px;
+	font-size: 16px;
+	width: 150px;
+
+	.title {
+		font-size: 1.3em;
+	}
+}
+
 .square-box-container {
 	position: relative;
+	height: 100%;
 
 	.square-content-container {
 		color: black;
