@@ -3,6 +3,7 @@
 	"name": "Mega Wheel",
 	"price": 200,
 	"happiness": 10,
+	"duration": 15,
 	"capacity": 22,
 	"build-time": 4,
 	"image": "wheel.png",

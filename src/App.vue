@@ -1,11 +1,17 @@
 <template>
   <div id="app">
 	  <transition name="fade">
-	  	  <div v-show="$store.state.board.rain" class="weather-container">
-	  	  	  <img class="rain" src="/images/rain.gif" alt="">
+	  	  <div v-show="$store.state.board.weather !== 'sun'" class="weather-container">
+	  	  	  <img v-show="$store.state.board.weather === 'rain'" class="rain" src="/images/rain.gif" alt="">
 	  	  	  <img class="clouds" src="/images/cloud_texture.jpg" alt="">
 	  	  </div>
 	  </transition>
+	  <div class="next-wave">
+		  {{ $store.state.visitors.nextWaveVisitors }}
+	  </div>
+	  <div class="exit">
+		  {{ $store.state.visitors.goneVisitors }}
+	  </div>
 	  Money : {{ $store.state.player.money }} <input type="text" v-model="playerMoney">
 	  <Board />
 	  <div class="building-cards">
@@ -38,14 +44,17 @@ export default {
 			}
 		}
 	},
-  	methods: {
+	methods: {
 		//incrementSize(type, amount) {
 			//this.$store.commit('updateSize', { type, amount });
 		//},
 	},
 	beforeCreate() {
 		/* INFO initializing the available buildings */
-		this.$store.dispatch('init', { buildings: [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ] });
+		this.$store.dispatch('init', {
+			buildings: [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ],
+			visitors: 12
+		});
 	},
 }
 </script>

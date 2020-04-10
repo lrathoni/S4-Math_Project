@@ -8,10 +8,10 @@
 		:style="computeTemplatePosition">
 		<div class="popper info-building">
 			<span class="title">{{ square.building.name }}</span>
-			dqdqdqzd {{ num }}
+			Visitors {{ square.visitors }}
 		</div>
 		<div slot="reference" @click.stop class="square-box-container">
-			<div class="square-content-container" :style="backgroundImage"></div>
+			<div class="square-content-container" :style="{ ...backgroundImage, backgroundColor: (square.building.capacity === square.visitors) ? '#FF000022' : '#0000FF22' }"></div>
 		</div>
 	</popper>
 </template>

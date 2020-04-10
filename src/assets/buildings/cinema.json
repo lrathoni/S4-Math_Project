@@ -3,6 +3,7 @@
 	"name": "Cinecity",
 	"price": 150,
 	"happiness": 5,
+	"duration": 10,
 	"capacity": 200,
 	"build-time": 10,
 	"image": "cinema.png",

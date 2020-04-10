@@ -8,10 +8,11 @@ const state = {
 			id: Number,
 			x: Number,
 			y: Number,
-			building: {}
+			building: Building,
+			visitors: Number
 		}*/
 	],
-	rain: false
+	weather: 'sun' // NOTE possible values: 'sun' || 'clouds' || 'rain'
 }
 
 const mutations = {
@@ -21,14 +22,22 @@ const mutations = {
 			id: state.currentID,
 			x,
 			y,
-			building
+			building,
+			visitors: 0
 		})
 	},
 
-	/* TODO check if having an ID is still necessary */
+	addVisitorToBuilingById(state, id) {
+		state.squares.find(square => square.id == id).visitors++;
+	},
+
 	incrementIndex(state) {
 		state.currentID++;
 	},
+
+	freeBuilding(state, id) {
+		state.squares.find(square => square.id == id).visitors = 0;
+	}
 }
 
 const actions = {
@@ -41,7 +50,33 @@ const actions = {
 
 		/* INFO update the internal index system */
 		context.commit('incrementIndex');
-	}
+	},
+
+	/**
+	 * Dispatches a visitor from the current wave to any available building
+	 * The one that can't go anywhere, go straight to the exit of the park
+	 * */
+	addVisitorToRandomBuilding(context) {
+		const availableBuildingIds = context.getters['AVAILABLE_BUILDING_IDS'];
+		if (availableBuildingIds.length) {
+			const randomIndex = Math.floor(Math.random() * availableBuildingIds.length);
+			const randomBuildingId = availableBuildingIds[randomIndex];
+			context.commit('addVisitorToBuilingById', randomBuildingId);
+
+			const square = state.squares.find(square => square.id == randomBuildingId);
+			if (square.visitors === square.building.capacity) {
+				console.log('full')
+				setTimeout(() => {
+					context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
+					context.commit('freeBuilding', square.id);
+				}, square.building.duration * 1000);
+			}
+		}
+		else {
+			context.commit('visitors/increment_goneVisitors', 1, { root: true });
+		}
+		context.commit('visitors/decrement_nextWaveVisitors', null, { root: true });
+	},
 }
 
 function isOverlaping(squares, element) {
@@ -95,6 +130,10 @@ const getters = {
 				else return true;
 			}
 		} 
+	},
+
+	AVAILABLE_BUILDING_IDS(state) {
+		return state.squares.filter(square => square.building.capacity > square.visitors).map(square => square.id);
 	}
 }
 

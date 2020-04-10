@@ -3,6 +3,7 @@
 	"name": "Drinks and beverages",
 	"price": 200,
 	"happiness": 10,
+	"duration": 6,
 	"capacity": 22,
 	"build-time": 4,
 	"image": "drink.png",
