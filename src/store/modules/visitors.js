@@ -30,12 +30,18 @@ const actions = {
 	dispatchVisitorWave(context) {
 		while(context.state.nextWaveVisitors) {
 			context.dispatch('board/addVisitorToRandomBuilding', null, { root: true });
+			context.commit('decrement_nextWaveVisitors');
 		}
+	},
+
+	moveVisitorsInOutdoorBuildingsToExit(context) {
+		const visitorsToGo = context.rootState.board.squares.reduce(( acc, square ) => acc + square.visitors, 0);
+		console.log(visitorsToGo);
+		context.commit('increment_goneVisitors', visitorsToGo);
 	},
 
 	/**
 	 * Initialize the constant flow of visitors
-	 * @param visitors Number optionnaly set the first visitors
 	 */
 	initVisitorFlow(context) {
 		const currentWeather = context.rootState.board.weather;

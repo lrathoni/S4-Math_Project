@@ -6,6 +6,7 @@
 	"duration": 6,
 	"capacity": 22,
 	"build-time": 4,
+	"durability": 0.9,
 	"image": "drink.png",
 	"indoor": false,
 	"width": 1,

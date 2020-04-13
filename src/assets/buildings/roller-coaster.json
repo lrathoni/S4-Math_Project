@@ -6,6 +6,7 @@
 	"duration": 15,
 	"capacity": 200,
 	"build-time": 10,
+	"durability": 0.2,
 	"image": "roller-coaster.png",
 	"indoor": true,
 	"width": 3,

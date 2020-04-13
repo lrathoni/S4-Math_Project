@@ -8,10 +8,16 @@
 		:style="computeTemplatePosition">
 		<div class="popper info-building">
 			<span class="title">{{ square.building.name }}</span>
-			Visitors {{ square.visitors }}
+			<div v-if="square.brocken === false">
+				Visitors {{ square.visitors }}
+			</div>
+			<div v-else class="trash">
+				Brocken
+			</div>
 		</div>
 		<div slot="reference" @click.stop class="square-box-container">
-			<div class="square-content-container" :style="{ ...backgroundImage, backgroundColor: (square.building.capacity === square.visitors) ? '#FF000022' : '#0000FF22' }"></div>
+			<div class="square-content-container" :style="{ ...backgroundImage, backgroundColor }"></div>
+			<div v-if="square.brocken" @click.stop="$store.commit('board/removeBuilding', square.id)" class="trash"></div>
 		</div>
 	</popper>
 </template>
@@ -29,6 +35,14 @@ export default {
 		'square'
 	],
 	computed: {
+		backgroundColor() {
+			if ( this.square.brocken )
+				return 'gray';
+			else if ( this.square.building.capacity === this.square.visitors )
+				return '#FF000022';
+			else
+				return '#0000FF22';
+		},
 		computeTemplatePosition() {
 			return {
 				gridColumnStart: this.square.x,
@@ -66,6 +80,15 @@ export default {
 .square-box-container {
 	position: relative;
 	height: 100%;
+
+	.trash {
+		position: absolute;
+		width: 40px;
+		height: 40px;
+		background-color: red;
+		top: 0;
+		left: 0;
+	}
 
 	.square-content-container {
 		color: black;

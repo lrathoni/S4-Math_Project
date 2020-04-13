@@ -13,16 +13,16 @@ Vue.use(Vuex);
 const actions = {
 	/**
 	 * Initialize state's available buildings using an array of building names to retrieve
-	 * @param payload .buildings property should look like this ['nameOfABuilding', 'anotherBuilding']
+	 * @param availableBuildings String[] should look like this ['nameOfABuilding', 'anotherBuilding']
 	 * It must match a building's JSON filename
 	 * */
-	init(context, payload) {
-		payload.buildings.forEach(buildingName => context.commit('buildings/loadBuilding', { buildingName }));
+	init(context, availableBuildings) {
+		availableBuildings.forEach(buildingName => context.commit('buildings/loadBuilding', { buildingName }));
 
 		/* INFO automatically set the first building as current selection */
-		context.commit('player/setSelected', context.state.buildings.buildings[payload.buildings[0]]);
+		context.commit('player/setSelected', context.state.buildings.buildings[availableBuildings[0]]);
 
-		context.dispatch('visitors/initVisitorFlow', payload.visitors);
+		context.dispatch('visitors/initVisitorFlow');
 	}
 }
 

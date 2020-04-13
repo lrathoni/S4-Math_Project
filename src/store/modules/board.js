@@ -9,47 +9,95 @@ const state = {
 			x: Number,
 			y: Number,
 			building: Building,
-			visitors: Number
+			visitors: Number,
+			running: null
+			breakInterval: Interval
+			brocken: Boolean
 		}*/
 	],
-	weather: 'sun' // NOTE possible values: 'sun' || 'clouds' || 'rain'
+	weather: 'sun', // NOTE possible values: 'sun' || 'clouds' || 'rain'
 }
 
 const mutations = {
 	addSquare(state, payload) {
-		const { x, y, building } = payload;
+		const { x, y, building, breakInterval } = payload;
 		state.squares.push({
 			id: state.currentID,
 			x,
 			y,
 			building,
-			visitors: 0
+			visitors: 0,
+			breakInterval,
+			brocken: false
 		})
 	},
 
 	addVisitorToBuilingById(state, id) {
-		state.squares.find(square => square.id == id).visitors++;
+		state.squares.find( square => square.id === id ).visitors++;
 	},
 
 	incrementIndex(state) {
 		state.currentID++;
 	},
 
+	removeBuilding(state, id) {
+		const index = state.squares.findIndex( square => square.id === id );
+		if (index > -1)
+			state.squares.splice(index, 1);
+	},
+
 	freeBuilding(state, id) {
 		state.squares.find(square => square.id == id).visitors = 0;
+	},
+
+	set_weather(state, weather) {
+		state.weather = weather;
+	},
+
+	clearRunningOutdoorBuildings(state) {
+		state.squares.filter(square => !square.building.indoor && square.running)
+			.forEach(square => clearTimeout(square.running));
+	},
+
+	clearBuilding(state, id) {
+		const square = state.squares.find( square => square.id === id );
+		clearTimeout(square.running);
+	},
+
+	freeOutdoorBuildings(state) {
+		state.squares.filter(square => !square.building.indoor)
+			.forEach(square => square.visitors = 0);
+	},
+
+	setBrockenBuilding(state, id) {
+		const square = state.squares.find( square => square.id === id );
+		square.brocken = true;
 	}
 }
 
 const actions = {
 	addSquareSel(context, payload) {
 		let { x, y } = payload;
-
 		const building = context.rootState.player.selected;
-
-		context.commit('addSquare', { x, y, building });
-
+		const breakInterval = setInterval((id) => {
+			// TODO random variable here
+			if ( Math.random() > building.durability ) {
+				context.dispatch('breakBuilding', id);
+			}
+		}, 5000, context.state.currentID);
+		context.commit('addSquare', { x, y, building, breakInterval });
 		/* INFO update the internal index system */
 		context.commit('incrementIndex');
+	},
+
+	breakBuilding(context, id) {
+		const square = context.state.squares.find(square => square.id === id);
+		clearInterval(square.breakInterval);
+		context.commit('setBrockenBuilding', id);
+		context.commit('clearBuilding', id);
+		context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
+		context.commit('freeBuilding', id);
+		// TODO TODAY make the brocken buildings visual, get rid of the folks inside and finally make in unavailable to the public. Don't forget to check if it's working fine
 	},
 
 	/**
@@ -65,17 +113,23 @@ const actions = {
 
 			const square = state.squares.find(square => square.id == randomBuildingId);
 			if (square.visitors === square.building.capacity) {
-				console.log('full')
-				setTimeout(() => {
+				square.running = setTimeout(() => {
+					// TODO calculate the bonus: happiness points because this is the end of the attraction
 					context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
 					context.commit('freeBuilding', square.id);
 				}, square.building.duration * 1000);
 			}
-		}
-		else {
+		} else
 			context.commit('visitors/increment_goneVisitors', 1, { root: true });
+	},
+
+	changeWeather(context, newWeather) {
+		if (newWeather === 'rain') {
+			context.dispatch('visitors/moveVisitorsInOutdoorBuildingsToExit', null, { root: true });
+			context.commit('clearRunningOutdoorBuildings');
+			context.commit('freeOutdoorBuildings');
 		}
-		context.commit('visitors/decrement_nextWaveVisitors', null, { root: true });
+		context.commit('set_weather', newWeather);
 	},
 }
 
@@ -118,7 +172,6 @@ const getters = {
 	 * @param y coordinate in board space
 	 */
 	IS_CONSTRUCTIBLE(state) {
-		//const dimensions = getters['buildings/DIMENSIONS'];
 		return (x, y, width, height) => {
 			if ((x + width - 1) > state.width)
 				return false;
@@ -132,8 +185,17 @@ const getters = {
 		} 
 	},
 
+	/**
+	 * Returns an array of building IDs
+	 * The selected buildings have at least one free space and in case of rainy weather they must be indoor
+	 * @returns Array of building IDs, can be empty
+	 * */
 	AVAILABLE_BUILDING_IDS(state) {
-		return state.squares.filter(square => square.building.capacity > square.visitors).map(square => square.id);
+		return state.squares.filter(square =>
+			( state.weather !== 'rain' || square.building.indoor ) &&
+			square.building.capacity > square.visitors &&
+			square.brocken === false
+		).map(square => square.id);
 	}
 }
 

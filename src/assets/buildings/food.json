@@ -6,6 +6,7 @@
 	"duration": 21,
 	"capacity": 200,
 	"build-time": 10,
+	"durability": 0.9,
 	"image": "food.png",
 	"indoor": true,
 	"width": 1,

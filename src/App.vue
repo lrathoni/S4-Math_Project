@@ -13,6 +13,9 @@
 		  {{ $store.state.visitors.goneVisitors }}
 	  </div>
 	  Money : {{ $store.state.player.money }} <input type="text" v-model="playerMoney">
+	  <fieldset v-for="(weatherOption, id) in Object.keys($store.state.visitors.visitorPerWave)" :key="id">
+	  	  <input v-model="weather" type="radio" name="weather" :value="weatherOption"><label>{{ weatherOption }}</label><br>
+	  </fieldset>
 	  <Board />
 	  <div class="building-cards">
 			<BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
@@ -42,6 +45,14 @@ export default {
 			get() {
 				return this.$store.state.player.money;
 			}
+		},
+		weather: {
+			set(value) {
+				this.$store.dispatch('board/changeWeather', value);
+			},
+			get() {
+				return this.$store.state.board.weather;
+			}
 		}
 	},
 	methods: {
@@ -51,10 +62,8 @@ export default {
 	},
 	beforeCreate() {
 		/* INFO initializing the available buildings */
-		this.$store.dispatch('init', {
-			buildings: [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ],
-			visitors: 12
-		});
+		const availableBuildings = [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ];
+		this.$store.dispatch('init', availableBuildings);
 	},
 }
 </script>
@@ -106,26 +115,26 @@ export default {
 body {
 	margin: 0;
 	background-color: white;
-  	width: 100vw;
-  	height: 100vh;
-  	overflow: hidden;
-  	position: fixed;
-  	top: 0;
-  	left: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
 
-  	&:after {
-	  	content: "";
-	  	display: block;
-	  	width: 100%;
-	  	height: 100%;
-	  	position: absolute;
-	  	top: 0;
-	  	left: 0;
-  	  	background-image: url(./assets/paper.jpg);
+	&:after {
+		content: "";
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background-image: url(./assets/paper.jpg);
 		z-index: -1;
 		opacity: 0.6;
 
-  	}
+	}
 }
 
 .fade-enter-active, .fade-leave-active {
