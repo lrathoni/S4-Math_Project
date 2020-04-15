@@ -24,9 +24,9 @@ function probability(n,p) {
     for (let k=0; k<=n; ++k) {
         tab.push(k_parmi_n(k,n) * Math.pow(p,k) * Math.pow(1-p,n-k))
         total += tab[k]
-        console.log("p("+ k + ") = " + tab[k])
+        //console.log("p("+ k + ") = " + tab[k])
     }
-    console.log("p(omega) = " + total)
+    //console.log("p(omega) = " + total)
     return tab
 }
 
@@ -58,38 +58,10 @@ export function findEventBinom(n,p) {
         k++
         proba += tab[k]
     }
-    return k
+    return k==10 ? k-1 : k
 }
 
 
-//To get time
-//return an occurence 
-// export function wheelTime() {
-//     var vstart = 0
-//     var vstop = 0
-//     var limitTime = 15;
-//     var button = document.getElementById("button")
-//             if(button.value != "Stop") {
-//                 button.onclick = function() {
-//                     if (button.value == "Press to Stop") {
-//                         button.value = "Stop"
-//                         return BinomialVariable.eventTab[findEventBinom()]
-//                         // vstop = new Date().getTime()
-//                         // return getDeltaTime()
-//                     }
-//                     if (button.value == "Go")
-//                     {
-//                         button.value = "Press to Stop"
-//                         vstart = new Date().getTime()
-//                         return "Auras-tu de la chance?"
-//                     }
-//                 }
-//             }
-// }
-
-function getDeltaTime(start, stop) {
-    return ((stop - start)/1000)
-    }
 
 
 //Weather period

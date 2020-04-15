@@ -44,21 +44,21 @@
                     if (button.value == "Press to Stop")
                     {
                         button.value = "Stop"
-                        console.log(button.value)
+                        //console.log(button.value)
                         var diff = new Date().getTime() - this.timer
                         var deg=36*diff;
                         rotation.style.animation = "rotateAnim 10s linear 0"
                         rotation.style.transform = "rotateZ(" + deg + "deg)"
                         BinomialVariable.p = greenBar.offsetWidth/480
-                        console.log("p = "+ BinomialVariable.p)
+                        //console.log("p = "+ BinomialVariable.p)
                         this.resultat = BinomialVariable.eventTab[findEventBinom(BinomialVariable.n,BinomialVariable.p)]
                     }
                     if( button.value == "chooseSpeed") {
                         greenBar.style.animationPlayState = "paused"
-                        console.log("width value " + greenBar.offsetWidth/480 )
+                        //console.log("width value " + greenBar.offsetWidth/480 )
                         button.value = "Press to Stop"
                         rotation.style.animation = "rotateAnim 0.5s linear infinite"
-                        console.log(button.value)
+                        //console.log(button.value)
                     }
                     if (button.value == "Go")
                     {
