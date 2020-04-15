@@ -7,7 +7,8 @@
 	  	  </div>
 	  </transition>
 	  <div class="next-wave">
-		  {{ $store.state.visitors.nextWaveVisitors }}
+	  	  <div class="visitor" v-for="(visitor, id) in $store.state.visitors.nextWaveVisitors" :key="id"></div>
+		  <!--{{ $store.state.visitors.nextWaveVisitors }}-->
 	  </div>
 	  <div class="exit">
 		  {{ $store.state.visitors.goneVisitors }}
@@ -82,6 +83,21 @@ export default {
 		bottom: 0;
 		height: 230px;
 		display: flex;
+	}
+
+	.next-wave {
+		width: 200px;
+		height: 100px;
+
+		.visitor {
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			background-image: url(/icons/visitor.png);
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
 	}
 
 	.weather-container {
