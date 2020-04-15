@@ -31,7 +31,7 @@ export default {
   name: 'App',
   components: {
     Board,
-	  BuildingCard
+	BuildingCard
   },
   	computed: {
 		buildings() {
