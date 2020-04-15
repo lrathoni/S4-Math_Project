@@ -1,9 +1,13 @@
 <template>
     <div id="app">
         <h2 id="phrase"> Tentez votre chance ! Et si vous n'en avez pas, tentez quand même !</h2>
-        <div id="rotationManagement" class="">
-            <img class="wheel movement stop" src="./assets/roulette/images/luckyWheel.png" alt="">
+        <center>
+            <img id="rotationManagement" class="wheel" src="./assets/roulette/images/luckyWheel.png" alt="">
+            <div id="bar">
+                <div id="percentage">
+            </div>
         </div>
+        </center>
         <div>
             <h3 id="displayRes">{{resultat}}</h3>
             <button id="button" @click="changeResult" type="button" value="Go">
@@ -25,34 +29,42 @@
 
     export default {
         name : "Test",
-        data() { return {"resultat" : "Clic pour démarrer?",
+        data() { return {"resultat" : "Clic pour démarrer, sur la flèche hein !",
                             "betaResult" : "beta resultat",
                             "visitorResult" : "Combien de personnes ?!!",
-                            "breakResult" : "game over"
+                            "breakResult" : "game over",
+                            "timer" : 0
                         }},
         methods : {
             changeResult() {
                 var button = document.getElementById("button")
                 var rotation = document.getElementById("rotationManagement")
-                var rand = 0
+                var greenBar = document.getElementById("percentage")
                 if(button.value != "Stop") {
                     if (button.value == "Press to Stop")
                     {
-                        var completeStop = new Date().getTime()
-                        rotation.className = "endRotate"
-                        while (((new Date().getTime() - completeStop)/1000) < 5)
-                            (button.value == "Go")
                         button.value = "Stop"
-                        this.resultat = BinomialVariable.eventTab[findEventBinom()]
+                        console.log(button.value)
+                        var diff = new Date().getTime() - this.timer
+                        var deg=36*diff;
+                        rotation.style.animation = "rotateAnim 10s linear 0"
+                        rotation.style.transform = "rotateZ(" + deg + "deg)"
+                        BinomialVariable.p = greenBar.offsetWidth/480
+                        console.log("p = "+ BinomialVariable.p)
+                        this.resultat = BinomialVariable.eventTab[findEventBinom(BinomialVariable.n,BinomialVariable.p)]
+                    }
+                    if( button.value == "chooseSpeed") {
+                        greenBar.style.animationPlayState = "paused"
+                        console.log("width value " + greenBar.offsetWidth/480 )
+                        button.value = "Press to Stop"
+                        rotation.style.animation = "rotateAnim 0.5s linear infinite"
+                        console.log(button.value)
                     }
                     if (button.value == "Go")
                     {
-                        button.value = "Press to Stop"
-                        rand += (Math.random() * 360) + 2880;
-                        rotation.style.mozTransform = "rotate(" + rand + "deg)";
-                        rotation.style.msTransform = "rotate(" + rand + "deg)";
-                        rotation.style.transform = "rotate(" + rand + "deg)";
-                        rotation.className = "beginRotate"
+                        this.timer = new Date().getTime()
+                        greenBar.style.animation = " width 1s ease-in infinite"
+                        button.value = "chooseSpeed"                        
                     }
                 }
             },
@@ -63,6 +75,10 @@
                     button.value
                 </h4>}
                 return button.value
+            },
+
+            speedBar() {
+
             }
 
             // betaChange() {
@@ -89,17 +105,9 @@
     text-align: center;
 }
 
-#rotationManagement {
-    transition: transform 10s cubic-bezier(.5,.1,.15,1);
-    transform: rotate(0deg);
-    z-index: 1;
-    pointer-events: none;
-}
 .wheel {
     display:block;
-    margin-left:auto;
-    margin-right:auto;
-    position: relative;
+    //position: relative;
     margin-top: 50px;
     width: 500px;
     height: 500px;
@@ -115,12 +123,34 @@
     background: none;
     border: none;
 }
-.beginRotate {
 
+@keyframes rotateAnim {
+    from {transform: rotateZ(0);}
+    to {transform: rotateZ(360deg);}
 }
-.endRotate {
 
-}
+#bar {
+    /* font-size: 10px */
+    width: 30em;
+    height: 2em;
+    border-radius: 0.5em;
+    position: relative;
+    background: #f2f2f2;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  }
 
+#bar #percentage {
+    width: 0%;
+    position: absolute;
+    font-size: 1em;
+    background: #7be245;
+    height: 2em;
+    border-radius: 0.5em;
+  }
+
+  @keyframes width {
+      from {width: 0%;}
+      to {width: 100%;}
+  }
 
 </style>

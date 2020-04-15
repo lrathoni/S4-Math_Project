@@ -3,10 +3,18 @@
 
 //Structure containing "Event label", number
 export const BinomialVariable = {
-    eventTab : ["M1","M2","M3","M4","B1","B2","B3","B4","empty","empty"],
+    eventTab : ["C'est la crise, les prix des installations augmentent de 25%",
+                "Tata Monique est passé te voir ce WE, tu commences avec 100 pièces de plus !",
+                "Les banques, ce n'est plus ce que c'était, tu as 50 pièces de moins pour débuter!",
+                "T'as rien gagné, mais t'as rien perdu",
+                "Braderie générale, toutes les installations à -30% !",
+                "On m'annonce à l'oreillette qu'il va pleuvoir aujourd'hui",
+                "Merveilleux temps pour toute la durée de la partie !",
+                "On ne peut pas toujours gagné quelque-chose",
+                "Malheureusement, tu vas devoir fermer plus tôt aujourd'hui",
+                "Ton fournisseur t'as fait une fleur et a garanti une installation pour une panne"],
     n : 10 , // eventTab.size()
     p : 0.8, //probability chosen
-    probaEvent : probability(9, 0.8) //tab of probability according to a binomial law
 }
 
 // return an array with the probability of each event
@@ -41,13 +49,14 @@ function k_parmi_n(k,n) {
 }
 
 //return the range of the event 
-export function findEventBinom() {
+export function findEventBinom(n,p) {
+    let tab = probability(n,p)
     const t = Math.random() // return a pseudo random number between [0,1]
     let k=0
-    let proba =  BinomialVariable.probaEvent[0] // tab of proba value in BinomialVariable
+    let proba =  tab[0] // tab of proba value in BinomialVariable
     while (proba < t) {
         k++
-        proba += BinomialVariable.probaEvent[k]
+        proba += tab[k]
     }
     return k
 }
