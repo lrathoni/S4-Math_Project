@@ -7,6 +7,7 @@
 	  	  </div>
 	  </transition>
 	  <div>
+	  	  <h2>Happiness</h2>
 	  	  <Happiness />
 		  <Tickets />
 		  <!--{{ $store.state.player.happiness }}-->
@@ -83,10 +84,15 @@ export default {
   	text-align: center;
   	color: #2c3e50;
 
+	h2 {
+		margin-top: 50px;
+		margin-bottom: 30px;
+	}
+
 	.happiness-container {
 		width: 50%;
 		text-align: center;
-		margin: 100px auto 0;
+		margin: auto;
 		position: relative;
 	}
 

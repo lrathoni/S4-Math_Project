@@ -1,7 +1,8 @@
 <template>
 	<div class="happiness-container">
     	<span :style="{ left: percentage + '%' }">{{ Math.round(percentage) + '%' }}</span>
-		<progress :max="$store.state.player.maxHappiness" :value="$store.state.player.happiness" class="html5"></progress>
+		<progress :max="$store.state.player.maxHappiness" :value="$store.state.player.happiness" class="html5">
+		</progress>
 	</div>
 </template>
 
