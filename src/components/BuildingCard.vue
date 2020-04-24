@@ -1,5 +1,5 @@
 <template>
-	<div @click="selectBuilding" class="building-card-container" :style="{ backgroundColor: backgroundColor }">
+	<div @click="selectBuilding" class="building-card-container" :style="{ background: backgroundColor, transform: (this.building.id == this.$store.state.player.selected.id) ? 'translateY(-25px)' : ''}">
 		<div class="header">
 			<span>{{ buildingName }}</span>
 		</div>
@@ -21,10 +21,15 @@
 				<img class="info-icon" src="/icons/happiness.png" alt="">
 				<span class="info-content">{{ happiness }}</span>
 			</div>
-			<div class="info info-build-time">
-				<img class="info-icon" src="/icons/hammer.png" alt="">
-				<span class="info-content">{{ constructionTime }}</span>
+			<div class="info info-duration">
+				<img class="info-icon" src="/icons/hour.svg" alt="">
+				<span class="info-content">{{ duration }}</span>
 			</div>
+			<div class="info info-ticket-cost">
+				<img class="info-icon" src="/images/tickets.png" alt="">
+				<span class="info-content">{{ ticketCost }}</span>
+			</div>
+			<div class="empty"></div>
 	</div>
 </template>
 
@@ -41,14 +46,13 @@ export default {
 	},
 	methods: {
 		selectBuilding() {
+
 			this.$store.commit('player/setSelected', this.building)
 		}
 	},
 	computed: {
 		backgroundColor() {
-			if (this.building.id == this.$store.state.player.selected.id)
-				return "lightgreen";
-			else if (this.$store.state.player.money >= this.building.price)
+			if (this.$store.state.player.money >= this.building.price)
 				return "white";
 			else
 				return "gray";
@@ -66,6 +70,9 @@ export default {
 			//const imageURL = "../assets/buildings/images/" + this.building.image;
 			return require('../assets/buildings/images/' + this.building.image);
 		},
+		ticketCost() {
+			return this.building.ticket_cost + "$/person"
+		},
 		price() {
 			return this.building.price + "$"
 		},
@@ -73,10 +80,10 @@ export default {
 			return this.building.capacity + " persons"
 		},
 		happiness() {
-			return this.building.happiness + "/pers/s"
+			return this.building.happiness + "/person/sec."
 		},
-		constructionTime() {
-			return this.building['build-time'] + "s"
+		duration() {
+			return this.building['duration'] + "s"
 		}
 	}
 }
@@ -89,9 +96,29 @@ export default {
 	margin: 10px;
 	border-radius: 20px;
 	width: 250px;
-	grid-template-rows: [header] auto [props-start] repeat(4, 1fr) [props-end];
+	grid-template-rows: [header] auto [props-start] repeat(5, 1fr) [props-end] 1fr;
 	grid-template-columns: [col1] 1fr [col2] 1.5fr;
 	overflow: hidden;
+	border: 3px solid white;
+	box-shadow: 0 0 10px #00000094;
+	transition-property: transform;
+	transition-duration: .2s; 
+	transition-timing-function: ease-out;
+	cursor: pointer;
+
+	.empty {
+		display: block;
+		place-self: stretch;
+		height: 100%;
+		content: '';
+		grid-row: props-end / span 2;
+		grid-column: col1 / span 2;
+	}
+
+	&:hover {
+		transform: translateY(-30px) rotateZ(-3deg) scale(105%, 105%);
+	}
+
 
 	.header {
 		grid-row: header;

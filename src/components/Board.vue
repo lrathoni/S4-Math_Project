@@ -6,7 +6,7 @@
 			</tr>
 		</table> 
 		<div class="board-elements-container" :style="computeGridTemplate">
-			<Square v-for="(square, id) in $store.state.board.squares" :square="square" :num="id" :key="id" />
+			<Square v-for="square in $store.state.board.squares" :square="square" :key="square.id" />
 		</div>
 	</div>
 </template>
@@ -47,8 +47,10 @@ export default {
 			const buildingHeight = this.$store.state.player.selected.height;
 
 			/* NOTE check that it is possible to build */
-			if (this.$store.getters['board/IS_CONSTRUCTIBLE'](x, y, buildingWidth, buildingHeight))
-				this.$store.dispatch('board/addSquareSel', { x, y });
+			if (this.$store.state.player.money >= this.$store.state.player.selected.price) {
+				if (this.$store.getters['board/IS_CONSTRUCTIBLE'](x, y, buildingWidth, buildingHeight))
+					this.$store.dispatch('board/addSquareSel', { x, y });
+			}
 		}
 	}
 }
@@ -63,6 +65,7 @@ export default {
 
 	table {
 		margin: auto;
+		border-collapse: collapse;
 	}
 
 	.board-elements-container {
@@ -75,9 +78,9 @@ export default {
 	}
 
 	.board-grid-container td {
-		border: 1px solid black;
-		width: 75px;
-		height: 75px;
+		border: 2px dashed #075cff61;
+		width: 90px;
+		height: 50px;
 	}
 }
 </style>

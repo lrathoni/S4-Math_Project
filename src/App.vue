@@ -6,20 +6,19 @@
 	  	  	  <img class="clouds" src="/images/cloud_texture.jpg" alt="">
 	  	  </div>
 	  </transition>
-	  <div class="next-wave">
-	  	  <div class="visitor" v-for="(visitor, id) in $store.state.visitors.nextWaveVisitors" :key="id"></div>
-		  <!--{{ $store.state.visitors.nextWaveVisitors }}-->
-	  </div>
-	  <div class="exit">
-		  {{ $store.state.visitors.goneVisitors }}
-	  </div>
-	  Money : {{ $store.state.player.money }} <input type="text" v-model="playerMoney">
-	  <fieldset v-for="(weatherOption, id) in Object.keys($store.state.visitors.visitorPerWave)" :key="id">
-	  	  <input v-model="weather" type="radio" name="weather" :value="weatherOption"><label>{{ weatherOption }}</label><br>
-	  </fieldset>
-	  <Board />
-	  <div class="building-cards">
-			<BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
+	  <div>
+	  	  <Happiness />
+		  <Tickets />
+		  {{ $store.state.player.happiness }}
+		  <GoneVisitors />
+		  Money : {{ $store.state.player.money }} <input type="text" v-model="playerMoney">
+		  <fieldset v-for="(weatherOption, id) in Object.keys($store.state.visitors.visitorPerWave)" :key="id">
+			  <input v-model="weather" type="radio" name="weather" :value="weatherOption"><label>{{ weatherOption }}</label>
+		  </fieldset>
+		  <Board />
+		  <div class="building-cards">
+			  <BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
+		  </div>
 	  </div>
   </div>
 </template>
@@ -27,12 +26,18 @@
 <script>
 import Board from './components/Board.vue'
 import BuildingCard from './components/BuildingCard.vue'
+import GoneVisitors from './components/GoneVisitors'
+import Tickets from './components/Tickets'
+import Happiness from './components/Happiness'
 
 export default {
   name: 'App',
   components: {
     Board,
-	BuildingCard
+	  GoneVisitors,
+	  BuildingCard,
+	  Tickets,
+	  Happiness
   },
   	computed: {
 		buildings() {
@@ -81,23 +86,9 @@ export default {
 		position: absolute;
 		width: 100vw;
 		bottom: 0;
-		height: 230px;
+		height: 300px;
 		display: flex;
-	}
-
-	.next-wave {
-		width: 200px;
-		height: 100px;
-
-		.visitor {
-			display: inline-block;
-			width: 20px;
-			height: 20px;
-			background-image: url(/icons/visitor.png);
-			background-size: contain;
-			background-repeat: no-repeat;
-			background-position: center;
-		}
+		transform: translateY(50px);
 	}
 
 	.weather-container {
@@ -107,6 +98,8 @@ export default {
 		width: 100%;
 		height: 100%;
 		pointer-events: none;
+		opacity: 1;
+		z-index: -1;
 
 		> img {
 			width: 100%;
@@ -122,6 +115,7 @@ export default {
 
 			&.clouds {
 				mix-blend-mode: multiply;
+				opacity: .7;
 			}
 		}
 
@@ -147,16 +141,26 @@ body {
 		top: 0;
 		left: 0;
 		background-image: url(./assets/paper.jpg);
-		z-index: -1;
+		z-index: -2;
 		opacity: 0.6;
 
 	}
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 2.5s;
+.fade-enter-active {
+	animation: fade 2s;
 }
-.fade-enter, .fade-leave-to {
-  opacity: 0;
+
+.fade-leave-active {
+	animation: fade 2s reverse;
+}
+
+@keyframes fade {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }
 </style>

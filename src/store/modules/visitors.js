@@ -41,6 +41,7 @@ const actions = {
 
 	moveVisitorsInOutdoorBuildingsToExit(context) {
 		const visitorsToGo = context.rootState.board.squares.reduce(( acc, square ) => acc + square.visitors, 0);
+		context.commit('player/reduceHappiness', visitorsToGo, { root: true });
 		context.commit('increment_goneVisitors', visitorsToGo);
 	},
 

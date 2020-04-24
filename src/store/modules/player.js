@@ -1,11 +1,25 @@
 const state = {
 	money: 500,
+	happiness: 0,
+	maxHappiness: 100000,
 	selected: undefined
 }
 
 const mutations = {
-	addAmountToMoney(state, payload) {
-		state.money += payload.amount;
+	addAmountToMoney(state, amount) {
+		state.money += amount;
+	},
+	reduceMoney(state, amount) {
+		state.money -= amount;
+	},
+
+	addHappiness(state, happiness) {
+		state.happiness += happiness;
+	},
+
+	reduceHappiness(state, happiness) {
+		if (state.happiness > 0)
+			state.happiness -= happiness;
 	},
 
 	setMoney(state, money) {
@@ -18,14 +32,14 @@ const mutations = {
 }
 
 const getters = {
-	MONEY(state) {
-		return state.money;
-	},
+	HAS_ENOUGH_MONEY(state) {
+		return (amount) => state.money >= amount
+	}
 }
 
 export default {
 	namespaced: true,
 	state,
+	getters,
 	mutations,
-	getters
 }

@@ -1,3 +1,5 @@
+import { isBroken } from '@/math/VariablesAleatoires'
+
 const state = {
 	width: 12,
 	height: 8,
@@ -76,12 +78,23 @@ const mutations = {
 }
 
 const actions = {
+	removeBuilding(context, id) {
+		const square = context.state.squares.find(square => square.id === id);
+		console.log(square.building.price, context.rootState.player.money)
+		if (square.building.price / 2 <= context.rootState.player.money) {
+			context.commit('removeBuilding', id);
+			context.commit('player/reduceMoney', square.building.price / 2, { root: true });
+		}
+	},
 	addSquareSel(context, payload) {
 		let { x, y } = payload;
 		const building = context.rootState.player.selected;
+
+		context.commit('player/reduceMoney', building.price, { root: true })
+
 		const breakInterval = setInterval((id) => {
 			// TODO random variable here
-			if ( Math.random() > building.durability ) {
+			if ( isBroken(building.durability) ) {
 				context.dispatch('breakBuilding', id);
 			}
 		}, 5000, context.state.currentID);
@@ -94,7 +107,9 @@ const actions = {
 		const square = context.state.squares.find(square => square.id === id);
 		clearInterval(square.breakInterval);
 		context.commit('setBrockenBuilding', id);
+		context.commit('player/reduceHappiness', context.getters['HAPPINESS_REDUCTION_BY_ID'](id), { root: true });
 		context.commit('clearBuilding', id);
+		context.commit('player/reduceMoney', square.visitors * square.building.ticket_cost, { root: true });
 		context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
 		context.commit('freeBuilding', id);
 		// TODO TODAY make the brocken buildings visual, get rid of the folks inside and finally make in unavailable to the public. Don't forget to check if it's working fine
@@ -112,15 +127,20 @@ const actions = {
 			context.commit('addVisitorToBuilingById', randomBuildingId);
 
 			const square = state.squares.find(square => square.id == randomBuildingId);
+			context.commit('player/addAmountToMoney', square.building.ticket_cost, { root: true });
+
 			if (square.visitors === square.building.capacity) {
 				square.running = setTimeout(() => {
 					// TODO calculate the bonus: happiness points because this is the end of the attraction
+					context.commit('player/addHappiness', square.visitors * square.building.happiness * square.building.duration, { root: true })
 					context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
 					context.commit('freeBuilding', square.id);
 				}, square.building.duration * 1000);
 			}
-		} else
+		} else {
+			context.commit('player/reduceHappiness', 1, { root: true })
 			context.commit('visitors/increment_goneVisitors', 1, { root: true });
+		}
 	},
 
 	changeWeather(context, newWeather) {
@@ -196,6 +216,13 @@ const getters = {
 			square.building.capacity > square.visitors &&
 			square.brocken === false
 		).map(square => square.id);
+	},
+
+	HAPPINESS_REDUCTION_BY_ID(state) {
+		return (id) => {
+			const square = state.squares.find(square => square.id === id)
+			return square.building.capacity * square.building.ticket_cost;
+		}
 	}
 }
 
