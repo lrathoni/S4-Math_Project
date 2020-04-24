@@ -23,6 +23,8 @@ const actions = {
 		context.commit('player/setSelected', context.state.buildings.buildings[availableBuildings[0]]);
 
 		context.dispatch('visitors/initVisitorFlow');
+
+		setTimeout(() => context.dispatch('board/weatherUpdater'), 5000);
 	}
 }
 

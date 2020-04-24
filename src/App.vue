@@ -9,12 +9,13 @@
 	  <div>
 	  	  <Happiness />
 		  <Tickets />
-		  {{ $store.state.player.happiness }}
+		  <!--{{ $store.state.player.happiness }}-->
 		  <GoneVisitors />
-		  Money : {{ $store.state.player.money }} <input type="text" v-model="playerMoney">
-		  <fieldset v-for="(weatherOption, id) in Object.keys($store.state.visitors.visitorPerWave)" :key="id">
-			  <input v-model="weather" type="radio" name="weather" :value="weatherOption"><label>{{ weatherOption }}</label>
-		  </fieldset>
+		  Money : {{ $store.state.player.money }}
+		  <!-- <input type="text" v-model="playerMoney"> -->
+		  <!--<fieldset v-for="(weatherOption, id) in Object.keys($store.state.visitors.visitorPerWave)" :key="id">-->
+			  <!--<input v-model="weather" type="radio" name="weather" :value="weatherOption"><label>{{ weatherOption }}</label>-->
+		  <!--</fieldset>-->
 		  <Board />
 		  <div class="building-cards">
 			  <BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
@@ -82,6 +83,13 @@ export default {
   	text-align: center;
   	color: #2c3e50;
 
+	.happiness-container {
+		width: 50%;
+		text-align: center;
+		margin: 100px auto 0;
+		position: relative;
+	}
+
 	.building-cards {
 		position: absolute;
 		width: 100vw;
@@ -115,7 +123,7 @@ export default {
 
 			&.clouds {
 				mix-blend-mode: multiply;
-				opacity: .7;
+				opacity: .5;
 			}
 		}
 

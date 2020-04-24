@@ -36,9 +36,9 @@
 				<transition name="zoom">
 				<popper trigger="hover">
 					<div class="popper destroy-price">
-						<img src="/icons/crane.svg"><span>-{{ square.building.price / 2 }}$</span>	
+						<img src="/icons/crane.svg"><span>-{{ square.building.price * 0.33 }}$</span>	
 					</div>
-					<div slot="reference" class="scissors" :style="{ backgroundColor: ($store.getters['player/HAS_ENOUGH_MONEY'](square.building.price / 2)) ? '' : 'gray' }" v-show="square.brocken && hover" @click.prevent.stop="$store.dispatch('board/removeBuilding', square.id)"></div>
+					<div slot="reference" class="scissors" :style="{ backgroundColor: ($store.getters['player/HAS_ENOUGH_MONEY'](square.building.price * 0.33)) ? '' : 'gray' }" v-show="square.brocken && hover" @click.prevent.stop="$store.dispatch('board/removeBuilding', square.id)"></div>
 				</popper>
 				</transition>
 				<div class="gears" v-show=" this.square.building.capacity === this.square.visitors "></div>

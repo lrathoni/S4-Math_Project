@@ -18,8 +18,9 @@ const mutations = {
 	},
 
 	reduceHappiness(state, happiness) {
-		if (state.happiness > 0)
-			state.happiness -= happiness;
+		state.happiness -= happiness;
+		if (state.happiness < 0)
+			state.happiness = 0;
 	},
 
 	setMoney(state, money) {

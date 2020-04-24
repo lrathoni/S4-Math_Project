@@ -61,7 +61,7 @@ export default {
 	width: max-content;
    height: max-content;
    position: relative;
-   margin: 70px auto;
+   margin: 20px auto;
 
 	table {
 		margin: auto;

@@ -1,17 +1,29 @@
 <template>
 	<div class="happiness-container">
+    	<span :style="{ left: percentage + '%' }">{{ Math.round(percentage) + '%' }}</span>
 		<progress :max="$store.state.player.maxHappiness" :value="$store.state.player.happiness" class="html5"></progress>
 	</div>
 </template>
 
 <script>
 export default {
-	name: 'Happiness'
+	name: 'Happiness',
+	computed: {
+		percentage() {
+			return 100 / this.$store.state.player.maxHappiness * this.$store.state.player.happiness;
+		}
+	}
 }
 </script>
 
 <style lang="less">
 .happiness-container {
+
+	span {
+		transform: translateX(-50%);
+		position: absolute;
+		top: -20px;
+	}
 
 	progress[value] {
 		appearance: none;

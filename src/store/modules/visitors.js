@@ -1,7 +1,10 @@
+import { Poisson } from '@/math/VariablesAleatoires'
+
 const state = {
 	goneVisitors: 0,
 	nextWaveVisitors: 0,
 	waveInterval: 5000,
+	thisWave: 0,
 	visitorPerWave: {
 		sun: 20,
 		clouds: 10,
@@ -10,6 +13,10 @@ const state = {
 }
 
 const mutations = {
+	set_thisWave(state, number) {
+		state.thisWave = number;
+	},
+
 	set_nextWaveVisitors(state, number) {
 		state.nextWaveVisitors = number;
 	},
@@ -48,7 +55,10 @@ const actions = {
 	launchNewWave(context) {
 		const currentWeather = context.rootState.board.weather;
 		// TODO bring a random value somewhere over here
-		context.commit('set_nextWaveVisitors', context.state.visitorPerWave[currentWeather]);
+		const visitors = Poisson(currentWeather);
+		context.commit('set_thisWave', visitors);
+		context.commit('set_nextWaveVisitors', visitors);
+		//context.commit('set_nextWaveVisitors', context.state.visitorPerWave[currentWeather]);
 
 		context.dispatch('dispatchVisitorWave');
 

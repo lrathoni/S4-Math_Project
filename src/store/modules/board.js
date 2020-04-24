@@ -83,7 +83,7 @@ const actions = {
 		console.log(square.building.price, context.rootState.player.money)
 		if (square.building.price / 2 <= context.rootState.player.money) {
 			context.commit('removeBuilding', id);
-			context.commit('player/reduceMoney', square.building.price / 2, { root: true });
+			context.commit('player/reduceMoney', square.building.price * 0.33, { root: true });
 		}
 	},
 	addSquareSel(context, payload) {
@@ -107,7 +107,7 @@ const actions = {
 		const square = context.state.squares.find(square => square.id === id);
 		clearInterval(square.breakInterval);
 		context.commit('setBrockenBuilding', id);
-		context.commit('player/reduceHappiness', context.getters['HAPPINESS_REDUCTION_BY_ID'](id), { root: true });
+		context.commit('player/reduceHappiness', context.getters['HAPPINESS_BY_BUILDING_ID'](id) * 2, { root: true });
 		context.commit('clearBuilding', id);
 		context.commit('player/reduceMoney', square.visitors * square.building.ticket_cost, { root: true });
 		context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
@@ -132,15 +132,25 @@ const actions = {
 			if (square.visitors === square.building.capacity) {
 				square.running = setTimeout(() => {
 					// TODO calculate the bonus: happiness points because this is the end of the attraction
-					context.commit('player/addHappiness', square.visitors * square.building.happiness * square.building.duration, { root: true })
+					context.commit('player/addHappiness', context.getters['HAPPINESS_BY_BUILDING_ID'](square.id), { root: true })
 					context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
 					context.commit('freeBuilding', square.id);
 				}, square.building.duration * 1000);
 			}
 		} else {
-			context.commit('player/reduceHappiness', 1, { root: true })
+			context.commit('player/reduceHappiness', 100, { root: true })
 			context.commit('visitors/increment_goneVisitors', 1, { root: true });
 		}
+	},
+
+	weatherUpdater(context) {
+		const w = ["sun", "sun", "sun", "sun", "sun", "sun", "sun", "rain", "rain", "clouds", "clouds", "clouds"];
+		const rand = Math.floor(Math.random() * 12);
+
+		const randTimeout = Math.random() * 15 + 5;
+
+		context.dispatch('changeWeather', w[rand])
+		setTimeout(() => context.dispatch('weatherUpdater'), 1000 * randTimeout)
 	},
 
 	changeWeather(context, newWeather) {
@@ -218,10 +228,10 @@ const getters = {
 		).map(square => square.id);
 	},
 
-	HAPPINESS_REDUCTION_BY_ID(state) {
+	HAPPINESS_BY_BUILDING_ID(state) {
 		return (id) => {
 			const square = state.squares.find(square => square.id === id)
-			return square.building.capacity * square.building.ticket_cost;
+			return square.building.capacity * square.building.duration * square.building.happiness;
 		}
 	}
 }
