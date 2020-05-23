@@ -84,9 +84,9 @@ export function Beta(a, b ,r) {
 //1 st Modelise a variable dependent of a exponential law
 //U de loi uniforme sur [0,1]. Alors X = -1/lambda * ln(U)
 
-export function Poisson(weather) {
+export function Poisson(lambda = 0) {
     //Lambda the parameter of Poisson law is the average number of visitors
-    let lambda = 0
+    /*let lambda = 0
     if (weather == "sun")
         lambda = 25
     else if (weather == "clouds")
@@ -94,7 +94,7 @@ export function Poisson(weather) {
     else if (weather == "rain")
         lambda = 5
     else
-        throw console.error("weather is not correctly defined")
+        throw console.error("weather is not correctly defined")*/
 
     //simulation of poisson law
     let t = Math.random() // return a pseudo random number between [0,1]

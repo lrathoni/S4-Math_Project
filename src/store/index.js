@@ -25,6 +25,11 @@ const actions = {
 		context.dispatch('visitors/initVisitorFlow');
 
 		setTimeout(() => context.dispatch('board/weatherUpdater'), 5000);
+
+		context.state.stats.gameDuration = Date.now();
+	},
+	stop(context) {
+		context.dispatch('stats/computeDuration');
 	}
 }
 

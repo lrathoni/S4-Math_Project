@@ -1,23 +1,31 @@
 <template>
-	<div @click="clickBoard" ref="container" class="board-container" >
+	<div @click="clickBoard" @mousemove="hoverBuilding" @mouseleave="coords = null" ref="container" class="board-container" >
 		<table ref="table" class="board-grid-container">
-			<tr v-for="(row, id) in $store.state.board.height" :key="id">
-				<td v-for="(columns, id) in $store.state.board.width" :key="id"></td>
+			<tr v-for="(id_row) in $store.state.board.height" :key="id_row">
+				<td v-for="(id_col) in $store.state.board.width" :key="id_col" :class="classTd(id_col, id_row)"></td>
 			</tr>
 		</table> 
 		<div class="board-elements-container" :style="computeGridTemplate">
 			<Square v-for="square in $store.state.board.squares" :square="square" :key="square.id" />
+			<SquareHover v-if="coords" :coords="coords" :building="$store.state.player.selected"/>
 		</div>
 	</div>
 </template>
 
 <script>
 import Square from './Square'
+import SquareHover from './SquareHover'
 
 export default {
 	name: 'Board',
 	components: {
-		Square
+		Square,
+		SquareHover
+	},
+	data() {
+		return {
+			coords: null
+		}
 	},
 	computed: {
 		squares() {
@@ -28,11 +36,16 @@ export default {
 				gridTemplateColumns: `repeat(${this.$store.state.board.width}, 1fr)`,
 				gridTemplateRows: `repeat(${this.$store.state.board.height}, 1fr)`
 			}
-		}
+		},
 	},
 	methods: {
-		clickBoard(event) {
-
+		classTd(id_col, id_row) {
+			if (id_row % 2 === 0)
+				return (id_col % 2 === 0) ? "blue" : "gray";
+			else
+				return (id_col % 2 === 0) ? "gray" : "blue";
+		},
+		getPositionOnBoard(event) {
 			/* NOTE computes the size of a square */
 			const { width, height } = this.$refs.container.getBoundingClientRect();
 			const { layerX, layerY } = event;
@@ -42,6 +55,20 @@ export default {
 			/* NOTE computes the x and y position is board space */
 			const x = Math.trunc(layerX / squareWidth) + 1;
 			const y = Math.trunc(layerY / squareHeight) + 1;
+
+			return { x, y };
+		},
+		hoverBuilding(event) {
+			const { x, y } = this.getPositionOnBoard(event);
+			const buildingWidth = this.$store.state.player.selected.width;
+			const buildingHeight = this.$store.state.player.selected.height;
+			if (this.$store.getters['board/IS_CONSTRUCTIBLE'](x, y, buildingWidth, buildingHeight))
+				this.coords = { x, y };
+			else
+				this.coords = null;
+		},
+		clickBoard(event) {
+			const { x, y } = this.getPositionOnBoard(event);
 
 			const buildingWidth = this.$store.state.player.selected.width;
 			const buildingHeight = this.$store.state.player.selected.height;
@@ -81,6 +108,13 @@ export default {
 		border: 2px dashed #075cff61;
 		width: 90px;
 		height: 50px;
+
+		&.blue {
+			background-color: #5a80cb40;
+		}
+		&.gray {
+			background-color: #60606017;
+		}
 	}
 }
 </style>

@@ -39,7 +39,7 @@ const actions = {
 		const dispatchInterval = setInterval(() => {
 			context.dispatch('board/addVisitorToRandomBuilding', null, { root: true });
 			context.commit('decrement_nextWaveVisitors');
-			if (context.state.nextWaveVisitors === 0) {
+			if (context.state.nextWaveVisitors <= 0) {
 				clearInterval(dispatchInterval);
 				context.dispatch('launchNewWave');
 			}
@@ -54,8 +54,9 @@ const actions = {
 
 	launchNewWave(context) {
 		const currentWeather = context.rootState.board.weather;
-		// TODO bring a random value somewhere over here
-		const visitors = Poisson(currentWeather);
+		let meanVisitors = context.state.visitorPerWave[currentWeather];
+		meanVisitors += context.rootState.board.squares.length;
+		const visitors = Poisson(meanVisitors);
 		context.commit('set_thisWave', visitors);
 		context.commit('set_nextWaveVisitors', visitors);
 		//context.commit('set_nextWaveVisitors', context.state.visitorPerWave[currentWeather]);

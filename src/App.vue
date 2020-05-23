@@ -9,10 +9,10 @@
 	  <div>
 	  	  <h2>Happiness</h2>
 	  	  <Happiness />
+	  	  <Money />
 		  <Tickets />
 		  <!--{{ $store.state.player.happiness }}-->
 		  <GoneVisitors />
-		  Money : {{ $store.state.player.money }}
 		  <!-- <input type="text" v-model="playerMoney"> -->
 		  <!--<fieldset v-for="(weatherOption, id) in Object.keys($store.state.visitors.visitorPerWave)" :key="id">-->
 			  <!--<input v-model="weather" type="radio" name="weather" :value="weatherOption"><label>{{ weatherOption }}</label>-->
@@ -27,6 +27,7 @@
 
 <script>
 import Board from './components/Board.vue'
+import Money from './components/Money.vue'
 import BuildingCard from './components/BuildingCard.vue'
 import GoneVisitors from './components/GoneVisitors'
 import Tickets from './components/Tickets'
@@ -39,7 +40,8 @@ export default {
 	  GoneVisitors,
 	  BuildingCard,
 	  Tickets,
-	  Happiness
+	  Happiness,
+	  Money
   },
   	computed: {
 		buildings() {
@@ -77,6 +79,9 @@ export default {
 </script>
 
 <style lang="less">
+.popper {
+	z-index: 99;
+}
 #app {
   	font-family: Avenir, Helvetica, Arial, sans-serif;
   	-webkit-font-smoothing: antialiased;
@@ -100,7 +105,7 @@ export default {
 		position: absolute;
 		width: 100vw;
 		bottom: 0;
-		height: 300px;
+		height: 350px;
 		display: flex;
 		transform: translateY(50px);
 	}

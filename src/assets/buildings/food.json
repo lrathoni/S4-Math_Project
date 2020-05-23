@@ -3,7 +3,7 @@
 	"name": "Snack",
 	"price": 250,
 	"ticket_cost": 4,
-	"happiness": 5,
+	"happiness": 6,
 	"duration": 7,
 	"capacity": 20,
 	"build-time": 10,

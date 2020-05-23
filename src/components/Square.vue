@@ -28,6 +28,9 @@
 			  class="square-box-container">
 			<div v-show="square.brocken === false" class="visitor-bubble">{{ square.visitors }}</div>
 			<div class="square-content-container" :style="{ ...backgroundImage, ...color }">
+				<div class="fireworks" v-if="fireworks">
+					<img src="/images/fireworks-transparent2.gif" alt="">
+				</div>
 				<div class="gradient" v-show="( this.square.building.capacity === this.square.visitors )"></div>
 				<transition name="flicker">
 					<div class="elec" v-if="square.brocken"></div>
@@ -36,7 +39,7 @@
 				<transition name="zoom">
 				<popper trigger="hover">
 					<div class="popper destroy-price">
-						<img src="/icons/crane.svg"><span>-{{ square.building.price * 0.33 }}$</span>	
+						<img src="/icons/crane.svg"><span>-{{ square.building.price * 0.33 }}$</span>
 					</div>
 					<div slot="reference" class="scissors" :style="{ backgroundColor: ($store.getters['player/HAS_ENOUGH_MONEY'](square.building.price * 0.33)) ? '' : 'gray' }" v-show="square.brocken && hover" @click.prevent.stop="$store.dispatch('board/removeBuilding', square.id)"></div>
 				</popper>
@@ -56,12 +59,21 @@ export default {
 	},
 	data() {
 		return {
-			hover: false
+			hover: false,
+			fireworks: false
 		}
 	},
 	props: [
 		'square'
 	],
+	watch: {
+		"square.visitors"(current_visitors, old_visitors) {
+			if (old_visitors === this.square.building.capacity && this.square.brocken === false){
+				this.fireworks = true;
+				setTimeout(() => this.fireworks = false, 2500)
+			}
+		}
+	},
 	computed: {
 		buildingType() {
 			if (this.square.building.indoor)
@@ -139,7 +151,6 @@ export default {
 	transition-property: transform;
 	transition-duration: .2s; 
 	transition-timing-function: ease-out; 
-
 
 	.popper.destroy-price  {
 		padding: 5px;
@@ -227,19 +238,27 @@ export default {
 		background-size: contain;
 		background-position: center;
 		background-repeat: no-repeat;
-		overflow: hidden;
+
+		.fireworks img {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 200%;
+			transform: translate(-50%, -50%);
+		}
 
 		.gradient {
 			content: '';
-    		width: 100%;
-    		height: 100%;
-    		background: linear-gradient(30deg, rgba(255, 0, 0, 1) , rgba(255, 255, 0, 1), rgba(0, 255, 0, 1), rgba(0, 255, 255, 1), rgba(0, 0, 255, 1), rgba(255, 0, 255, 1), rgba(255, 0, 0, 1));
-        	background-size: auto;
-    		animation: gradientBG 5s ease infinite;
-    		background-size: 400% 400%;
-    		z-index: -1;
-    		position: absolute;
-    		opacity: 0.2;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(30deg, rgba(255, 0, 0, 1) , rgba(255, 255, 0, 1), rgba(0, 255, 0, 1), rgba(0, 255, 255, 1), rgba(0, 0, 255, 1), rgba(255, 0, 255, 1), rgba(255, 0, 0, 1));
+			background-size: auto;
+			animation: gradientBG 5s ease infinite;
+			background-size: 400% 400%;
+			z-index: -1;
+			position: absolute;
+			opacity: 0.2;
+			border-radius: 15px;
 		}
 
 		.elec {

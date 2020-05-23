@@ -82,25 +82,29 @@ const actions = {
 		const square = context.state.squares.find(square => square.id === id);
 		console.log(square.building.price, context.rootState.player.money)
 		if (square.building.price / 2 <= context.rootState.player.money) {
+			const removalPrice = square.building.price * 0.33
 			context.commit('removeBuilding', id);
-			context.commit('player/reduceMoney', square.building.price * 0.33, { root: true });
+			context.commit('player/reduceMoney', removalPrice, { root: true });
+			context.commit('stats/inc_moneySpent', removalPrice, { root: true })
 		}
 	},
 	addSquareSel(context, payload) {
-		let { x, y } = payload;
-		const building = context.rootState.player.selected;
+		let { x, y } = payload
+		const building = context.rootState.player.selected
 
 		context.commit('player/reduceMoney', building.price, { root: true })
+		context.commit('stats/inc_moneySpent', building.price, { root: true })
+		context.commit('stats/inc_builtBuildings', null, { root: true })
 
 		const breakInterval = setInterval((id) => {
 			// TODO random variable here
 			if ( isBroken(building.durability) ) {
-				context.dispatch('breakBuilding', id);
+				context.dispatch('breakBuilding', id)
 			}
 		}, 5000, context.state.currentID);
-		context.commit('addSquare', { x, y, building, breakInterval });
+		context.commit('addSquare', { x, y, building, breakInterval })
 		/* INFO update the internal index system */
-		context.commit('incrementIndex');
+		context.commit('incrementIndex')
 	},
 
 	breakBuilding(context, id) {
@@ -112,7 +116,9 @@ const actions = {
 		context.commit('player/reduceMoney', square.visitors * square.building.ticket_cost, { root: true });
 		context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
 		context.commit('freeBuilding', id);
-		// TODO TODAY make the brocken buildings visual, get rid of the folks inside and finally make in unavailable to the public. Don't forget to check if it's working fine
+		context.commit('stats/inc_brockenBuildings', null, { root: true });
+		context.commit('stats/inc_moneyGained',
+			-square.visitors * square.building.ticket_cost, { root: true });
 	},
 
 	/**
@@ -128,6 +134,7 @@ const actions = {
 
 			const square = state.squares.find(square => square.id == randomBuildingId);
 			context.commit('player/addAmountToMoney', square.building.ticket_cost, { root: true });
+			context.commit('stats/inc_moneyGained', square.building.ticket_cost, { root: true });
 
 			if (square.visitors === square.building.capacity) {
 				square.running = setTimeout(() => {
@@ -144,13 +151,17 @@ const actions = {
 	},
 
 	weatherUpdater(context) {
-		const w = ["sun", "sun", "sun", "sun", "sun", "sun", "sun", "rain", "rain", "clouds", "clouds", "clouds"];
-		const rand = Math.floor(Math.random() * 12);
+		const w = ["sun", "sun", "sun", "sun", "sun", "sun", "sun", "rain", "clouds", "clouds", "clouds"];
+		const rand = Math.floor(Math.random() * 11)
 
-		const randTimeout = Math.random() * 15 + 5;
+		const duration = 1000 *  (Math.random() * 25 + 5)
 
 		context.dispatch('changeWeather', w[rand])
-		setTimeout(() => context.dispatch('weatherUpdater'), 1000 * randTimeout)
+		context.dispatch('stats/incrementWeatherTime', {
+			type: w[rand],
+			duration: duration
+		}, { root: true })
+		setTimeout(() => context.dispatch('weatherUpdater'), duration)
 	},
 
 	changeWeather(context, newWeather) {

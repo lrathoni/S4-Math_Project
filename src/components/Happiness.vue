@@ -1,8 +1,9 @@
 <template>
 	<div class="happiness-container">
-    	<span :style="{ left: percentage + '%' }">{{ Math.round(percentage) + '%' }}</span>
+    	<span class="percentage" :style="{ left: percentage + '%' }">{{ Math.round(percentage) + '%' }}</span>
 		<progress :max="$store.state.player.maxHappiness" :value="$store.state.player.happiness" class="html5">
 		</progress>
+		<span class="state">{{ $store.state.player.happiness }}/{{ $store.state.player.maxHappiness }}</span>
 	</div>
 </template>
 
@@ -20,10 +21,14 @@ export default {
 <style lang="less">
 .happiness-container {
 
-	span {
+	span.percentage {
 		transform: translateX(-50%);
 		position: absolute;
 		top: -20px;
+	}
+
+	span.state {
+		font-weight: bold;
 	}
 
 	progress[value] {

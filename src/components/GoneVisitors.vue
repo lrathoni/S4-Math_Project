@@ -19,8 +19,8 @@ export default {
 	width: 200px;
 	height: 100px;
 	rotate: 3deg;
-	right: 20px;
-	top: 60px;
+	right: 64px;
+	top: 41%;
 
 	span {
 		position: absolute;

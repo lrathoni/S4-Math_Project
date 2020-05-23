@@ -7,9 +7,9 @@
 	"duration": 15,
 	"capacity": 100,
 	"build-time": 10,
-	"durability": 0.989,
+	"durability": 0.992,
 	"image": "cinema.png",
 	"indoor": true,
 	"width": 2,
-	"height": 2
+	"height": 3
 }
