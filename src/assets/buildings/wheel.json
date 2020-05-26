@@ -3,7 +3,7 @@
 	"name": "Mega Wheel",
 	"price": 600,
 	"ticket_cost": 9,
-	"happiness": 18,
+	"happiness": 22,
 	"duration": 18,
 	"capacity": 25,
 	"build-time": 4,

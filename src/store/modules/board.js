@@ -1,4 +1,4 @@
-import { isBroken } from '@/math/VariablesAleatoires'
+import { isBroken, Beta } from '@/math/VariablesAleatoires'
 
 const state = {
 	width: 12,
@@ -151,11 +151,12 @@ const actions = {
 	},
 
 	weatherUpdater(context) {
-		const w = ["sun", "sun", "sun", "sun", "sun", "sun", "sun", "rain", "clouds", "clouds", "clouds"];
+		const w = ["sun", "sun", "sun", "sun", "sun", "sun", "sun", "rain", "clouds", "clouds", "clouds"]
 		const rand = Math.floor(Math.random() * 11)
 
-		const duration = 1000 *  (Math.random() * 25 + 5)
-
+		const duration = 1000 * Beta(5, 30, 4)
+		//const duration = 1000 *  (Math.random() * 25 + 5)
+		console.log('duration', duration)
 		context.dispatch('changeWeather', w[rand])
 		context.dispatch('stats/incrementWeatherTime', {
 			type: w[rand],

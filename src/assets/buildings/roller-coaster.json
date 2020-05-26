@@ -2,7 +2,7 @@
 	"id": "roller-coaster",
 	"name": "Roller Coaster",
 	"price": 750,
-	"happiness": 28,
+	"happiness": 32,
 	"ticket_cost": 13,
 	"duration": 12,
 	"capacity": 16,
