@@ -10,9 +10,9 @@ export const BinomialVariable = {
                 "Braderie générale, toutes les installations à -30% !",
                 "On m'annonce à l'oreillette qu'il va pleuvoir aujourd'hui",
                 "Merveilleux temps pour toute la durée de la partie !",
-                "On ne peut pas toujours gagné quelque-chose",
+                "On ne peut pas toujours gagner quelque-chose",
                 "Malheureusement, tu vas devoir fermer plus tôt aujourd'hui",
-                "Ton fournisseur t'as fait une fleur et a garanti une installation pour une panne"],
+                "Ton fournisseur t'as fait une fleur et a garanti une réinstallation en cas de panne pour chaque bâtiment"],
     n : 10 , // eventTab.size()
     p : 0.8, //probability chosen
 }
@@ -72,7 +72,7 @@ export function findEventBinom(n,p) {
 export function Beta(a, b ,r) {
     var t = Math.random()
     //return a number between [a,b] ** r
-    var x = Math.pow(a + (b-a)*t, r)
+    var x = Math.pow( Math.pow(a,1/r) + ( Math.pow(b, 1/r) - Math.pow(a,1/r) )*t, r)
     return x
 }
 

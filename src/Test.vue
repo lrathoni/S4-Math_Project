@@ -2,7 +2,9 @@
     <div id="app">
         <h2 id="phrase"> Tentez votre chance ! Et si vous n'en avez pas, tentez quand même !</h2>
         <center>
+            <h2 id="maxluck"> Maximisez vos chances d'obtenir un bonus, stoppez la jauge près d'une zone verte ! Cela ne fait qu'augmenter vos chance, nous ne garantissons aucun résultat. Cordialement, La direction</h2>
             <img id="rotationManagement" class="wheel" src="./assets/roulette/images/luckyWheel.png" alt="">
+            <img id="indicator" class="wheel" src="./assets/roulette/images/indatedSuccess.png" alt="">
             <div id="bar">
                 <div id="percentage">
             </div>
@@ -26,7 +28,10 @@
 
 <script>
     import {BinomialVariable, findEventBinom, Beta, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
-
+    for (let i=0; i<150; i++) {
+        console.log(Beta(5,30,4))
+    }
+    
     export default {
         name : "Test",
         data() { return {"resultat" : "Clic pour démarrer, sur la flèche hein !",
@@ -45,26 +50,22 @@
                     {
                         button.value = "Stop"
                         //console.log(button.value)
+                        greenBar.style.animationPlayState = "paused"
                         var diff = new Date().getTime() - this.timer
                         var deg=36*diff;
                         rotation.style.animation = "rotateAnim 10s linear 0"
                         rotation.style.transform = "rotateZ(" + deg + "deg)"
                         BinomialVariable.p = greenBar.offsetWidth/480
-                        //console.log("p = "+ BinomialVariable.p)
+                        console.log("p = "+ BinomialVariable.p)
                         this.resultat = BinomialVariable.eventTab[findEventBinom(BinomialVariable.n,BinomialVariable.p)]
                     }
-                    if( button.value == "chooseSpeed") {
-                        greenBar.style.animationPlayState = "paused"
-                        //console.log("width value " + greenBar.offsetWidth/480 )
-                        button.value = "Press to Stop"
-                        rotation.style.animation = "rotateAnim 0.5s linear infinite"
-                        //console.log(button.value)
-                    }
+                    
                     if (button.value == "Go")
                     {
                         this.timer = new Date().getTime()
                         greenBar.style.animation = " width 1s ease-in infinite"
-                        button.value = "chooseSpeed"                        
+                        rotation.style.animation = "rotateAnim 0.5s linear infinite"
+                        button.value = "Press to Stop"                        
                     }
                 }
             },
@@ -112,6 +113,11 @@
     width: 500px;
     height: 500px;
     margin-bottom: 50px;
+}
+
+#indicator {
+    width : 480px;
+    height: 50px;
 }
 #displayRes {
     text-align: center;
