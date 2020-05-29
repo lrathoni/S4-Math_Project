@@ -85,7 +85,7 @@ const actions = {
 			const removalPrice = square.building.price * 0.33
 			context.commit('removeBuilding', id);
 			context.commit('player/reduceMoney', removalPrice, { root: true });
-			context.commit('stats/inc_moneySpent', removalPrice, { root: true })
+			//context.commit('stats/inc_moneySpent', removalPrice, { root: true })
 		}
 	},
 	addSquareSel(context, payload) {
@@ -93,8 +93,8 @@ const actions = {
 		const building = context.rootState.player.selected
 
 		context.commit('player/reduceMoney', building.price, { root: true })
-		context.commit('stats/inc_moneySpent', building.price, { root: true })
-		context.commit('stats/inc_builtBuildings', null, { root: true })
+		//context.commit('stats/inc_moneySpent', building.price, { root: true })
+		//context.commit('stats/inc_builtBuildings', null, { root: true })
 
 		const breakInterval = setInterval((id) => {
 			// TODO random variable here
@@ -111,14 +111,14 @@ const actions = {
 		const square = context.state.squares.find(square => square.id === id);
 		clearInterval(square.breakInterval);
 		context.commit('setBrockenBuilding', id);
-		context.commit('player/reduceHappiness', context.getters['HAPPINESS_BY_BUILDING_ID'](id) * 2, { root: true });
+		context.commit('player/reduceHappiness', context.getters['HAPPINESS_BY_BUILDING_ID'](id) * 1.5, { root: true });
 		context.commit('clearBuilding', id);
 		context.commit('player/reduceMoney', square.visitors * square.building.ticket_cost, { root: true });
 		context.commit('visitors/increment_goneVisitors', square.visitors, { root: true });
 		context.commit('freeBuilding', id);
-		context.commit('stats/inc_brockenBuildings', null, { root: true });
-		context.commit('stats/inc_moneyGained',
-			-square.visitors * square.building.ticket_cost, { root: true });
+		//context.commit('stats/inc_brockenBuildings', null, { root: true });
+		//context.commit('stats/inc_moneyGained',
+			//-square.visitors * square.building.ticket_cost, { root: true });
 	},
 
 	/**
@@ -134,7 +134,7 @@ const actions = {
 
 			const square = state.squares.find(square => square.id == randomBuildingId);
 			context.commit('player/addAmountToMoney', square.building.ticket_cost, { root: true });
-			context.commit('stats/inc_moneyGained', square.building.ticket_cost, { root: true });
+			//context.commit('stats/inc_moneyGained', square.building.ticket_cost, { root: true });
 
 			if (square.visitors === square.building.capacity) {
 				square.running = setTimeout(() => {
@@ -156,12 +156,11 @@ const actions = {
 
 		const duration = 1000 * Beta(5, 30, 4)
 		//const duration = 1000 *  (Math.random() * 25 + 5)
-		console.log('duration', duration)
 		context.dispatch('changeWeather', w[rand])
-		context.dispatch('stats/incrementWeatherTime', {
-			type: w[rand],
-			duration: duration
-		}, { root: true })
+		//context.dispatch('stats/incrementWeatherTime', {
+			//type: w[rand],
+			//duration: duration
+		//}, { root: true })
 		setTimeout(() => context.dispatch('weatherUpdater'), duration)
 	},
 
@@ -238,6 +237,15 @@ const getters = {
 			square.building.capacity > square.visitors &&
 			square.brocken === false
 		).map(square => square.id);
+	},
+
+	AVAILABLE_BUILDING_TOTAL_CAPACITY(state) {
+		return state.squares.filter(square =>
+				( state.weather !== 'rain' || square.building.indoor ) &&
+				square.brocken === false
+			)
+			//.map(square => square.building.capacity)
+			.reduce((acc, square) => acc += square.building.capacity, 0);
 	},
 
 	HAPPINESS_BY_BUILDING_ID(state) {

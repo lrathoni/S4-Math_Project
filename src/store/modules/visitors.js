@@ -55,8 +55,9 @@ const actions = {
 	launchNewWave(context) {
 		const currentWeather = context.rootState.board.weather;
 		let meanVisitors = context.state.visitorPerWave[currentWeather];
-		meanVisitors += context.rootState.board.squares.length;
-		const visitors = Poisson(meanVisitors);
+		const total_available_capacity = context.rootGetters['board/AVAILABLE_BUILDING_TOTAL_CAPACITY'];
+		meanVisitors += total_available_capacity / 8;
+		const visitors = Poisson(Math.floor(meanVisitors));
 		context.commit('set_thisWave', visitors);
 		context.commit('set_nextWaveVisitors', visitors);
 		//context.commit('set_nextWaveVisitors', context.state.visitorPerWave[currentWeather]);

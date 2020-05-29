@@ -7,7 +7,7 @@
 	"duration": 7,
 	"capacity": 20,
 	"build-time": 10,
-	"durability": 0.99,
+	"durability": 0.993,
 	"image": "food.png",
 	"indoor": true,
 	"width": 1,

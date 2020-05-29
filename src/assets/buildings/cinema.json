@@ -5,7 +5,7 @@
 	"ticket_cost": 6,
 	"happiness": 8,
 	"duration": 15,
-	"capacity": 100,
+	"capacity": 50,
 	"build-time": 10,
 	"durability": 0.992,
 	"image": "cinema.png",
