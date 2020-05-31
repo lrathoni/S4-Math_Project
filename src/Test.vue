@@ -28,9 +28,6 @@
 
 <script>
     import {BinomialVariable, findEventBinom, Beta,Beta2, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
-        console.log(Beta2(5,30, 2,2))
-
-
     export default {
         name : "Test",
         data() { return {"resultat" : "Clic pour démarrer, sur la flèche hein !",

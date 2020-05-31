@@ -59,7 +59,7 @@ export function findEventBinom(n,p) {
         k++
         proba += tab[k]
     }
-    return k==10 ? k-1 : k
+    return k==9 ? k-1 : k
 }
 
 
@@ -87,16 +87,17 @@ Beta (alpha, beta ) ~ X / (X + Y) , X ~ G(alpha, lamda), Y ~ G(beta, lamda)
 Beta(alpha, beta) =  (sum (alpha times) (-(1/lambda) * Math.log(t))) / sum (alpha + beta times)  (-(1/lambda) * Math.log(t))
 */ 
 export function Beta2(a, b, alpha, beta) {
-    let gammaX = gamma(alpha, 1)
-    let gammaY = gamma(beta, 1)
+    const gammaX = gamma(alpha, 1)
+    const gammaY = gamma(beta, 1)
+    const f = gammaX / (gammaX + gammaY)
     //return a number between [a,b] ** r
-    return (a + (b-a)* (gammaX / (gammaX + gammaY)))
+    return a + (b-a) * f 
 }
 
 export function gamma(alpha,lambda) {
     let t=0
     let sumExp = 0
-    for (let i = 1; i <=alpha; i++ ) {
+    for (let i = 0; i <alpha; i++ ) {
         t = Math.random();
         sumExp += Math.log(t)
     }
