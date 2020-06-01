@@ -1,158 +1,169 @@
 <template>
-    <div id="app">
-        <h2 id="phrase"> Tentez votre chance ! Et si vous n'en avez pas, tentez quand même !</h2>
-        <center>
-            <h2 id="maxluck"> Maximisez vos chances d'obtenir un bonus, stoppez la jauge près d'une zone verte ! Cela ne fait qu'augmenter vos chance, nous ne garantissons aucun résultat. Cordialement, La direction</h2>
-            <img id="rotationManagement" class="wheel" src="./assets/roulette/images/luckyWheel.png" alt="">
-            <img id="indicator" class="wheel" src="./assets/roulette/images/indatedSuccess.png" alt="">
-            <div id="bar">
-                <div id="percentage">
-            </div>
-        </div>
-        </center>
-        <div>
-            <h3 id="displayRes">{{resultat}}</h3>
-            <button id="button" @click="changeResult" type="button" value="Go">
+    <div id="roulette">
+		 <div class="wheel">
+		 	 <img src="/images/red-arrow.png" class="arrow" alt="">
+       	 <img id="rotationManagement" class="pie-wheel" src="/images/simpleLuckyWheel.png" alt="">
+		 </div>
+		 <div class="controls">
+		 <div id="gradient">
+			 <div id="cursor"></div>
+		 </div>
+        <div class="handle">
+            <h3 id="displayRes">Click and maintain to adjust your luck</h3>
+            <button id="button" 
+						  v-long-press="300"
+    					  @long-press-start="onLongPressStart"
+    					  @long-press-stop="onLongPressStop"
+						  type="button" value="Go">
                 <img class="arrowWheel" src="./assets/roulette/images/arrowWheel.png" alt="">
             </button>
-            <p></p>
         </div>
-        <!-- <h3>{{betaResult}}</h3>
-        <input @click="betaChange" type="button" value="Test Beta">
-        <h3>{{visitorResult}}</h3>
-        <input @click="visitorChange" type="button" value="Test Poisson">
-        <h3>{{breakResult}}</h3>
-        <input @click="workOrNotwork" type="button" value="Test Bernouilli"> -->
+		 </div>
+		  <modal name="hello-world">
+  		  	  <h2 v-if="result.type == 'bonus'">Bonus</h2>
+  		  	  <h2 v-else-if="result.type == 'malus'">Malus</h2>
+  		  	  <h2 v-else>Nothing</h2>
+			  <p>{{ result.message }}</p>
+		  </modal>
     </div>
 </template>
 
 <script>
     import {BinomialVariable, findEventBinom, Beta,Beta2, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
+    import {BinomialVariable, findEventBinom, Beta, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
+    for (let i=0; i<150; i++) {
+        console.log(Beta(5,30,4))
+    }
+    
+import LongPress from 'vue-directive-long-press'
+
+    import {BinomialVariable, findEventBinom, Beta, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
+    for (let i=0; i<150; i++) {
+        console.log(Beta(5,30,4))
+    }
+    
     export default {
         name : "Test",
+		  directives: { 'long-press': LongPress },
         data() { return {"resultat" : "Clic pour démarrer, sur la flèche hein !",
                             "betaResult" : "beta resultat",
                             "visitorResult" : "Combien de personnes ?!!",
                             "breakResult" : "game over",
-                            "timer" : 0
+                            "timer" : 0,
+			  result: {
+			  	  message: "",
+				  callback: null,
+				  type: null
+			  }
                         }},
         methods : {
-            changeResult() {
-                var button = document.getElementById("button")
-                var rotation = document.getElementById("rotationManagement")
-                var greenBar = document.getElementById("percentage")
-                if(button.value != "Stop") {
-                    if (button.value == "Press to Stop")
-                    {
-                        button.value = "Stop"
-                        //console.log(button.value)
-                        greenBar.style.animationPlayState = "paused"
-                        var diff = new Date().getTime() - this.timer
-                        var deg=36*diff;
-                        rotation.style.animation = "rotateAnim 10s linear 0"
-                        rotation.style.transform = "rotateZ(" + deg + "deg)"
-                        BinomialVariable.p = greenBar.offsetWidth/480
-                        console.log("p = "+ BinomialVariable.p)
-                        this.resultat = BinomialVariable.eventTab[findEventBinom(BinomialVariable.n,BinomialVariable.p)]
-                    }
-                    
-                    if (button.value == "Go")
-                    {
-                        this.timer = new Date().getTime()
-                        greenBar.style.animation = " width 1s ease-in infinite"
-                        rotation.style.animation = "rotateAnim 0.5s linear infinite"
-                        button.value = "Press to Stop"                        
-                    }
-                }
-            },
+		  	  onLongPressStart() {
+              this.timer = new Date().getTime()
+              const cursor = document.getElementById("cursor")
+              cursor.style.animation = "top 1s ease-in infinite"
 
-            buttonValue() {
-                var button = document.getElementById("button")
-                {<h4>
-                    button.value
-                </h4>}
-                return button.value
-            },
+			  },
+			  onLongPressStop() {
+              var diff = new Date().getTime() - this.timer
+              var cursor = document.getElementById("cursor")
+              var rotation = document.getElementById("rotationManagement")
+				  cursor.style.webkitAnimationPlayState = "paused";
+              var deg=36*diff;
 
-            speedBar() {
+              const p = cursor.offsetTop/240
+				  this.result = this.$store.getters['roulette/RESULT'](p)
 
-            }
+				  rotation.animate([
+					  // keyframes
+					  { transform: 'rotateZ(0)' }, 
+					  { transform: `rotateZ(${360 * 2 - (360/10) * this.result.position}deg)` }
+				  ], { 
+					  // timing options
+					  duration: 2500,
+					  iterations: 1,
+					  fill: 'forwards',
+					  easing: 'ease-out'
+				  });
 
-            // betaChange() {
-            //     // a=0, b=5, r=2 => Loi en parabole resultat entre [0,25] => plus de résultat entre [0,6] et [19,25]
-            //     this.betaResult = Beta(0,5,2)
-            // },
-
-            // visitorChange() {
-            //     this.visitorResult = Poisson("sun")
-            // },
-
-            // workOrNotwork() {
-            //     this.breakResult = isBroken(0.9)
-            // }
+				  console.log(this.result.message)
+				  setTimeout(() => { this.$modal.show('hello-world') }, 2500)
+			  },
         }
     }
 </script>
 
 <style lang="less">
-#app{
-    background : url('./assets/paper.jpg');
-}
-#phrase {
-    text-align: center;
-}
+#roulette {
+	position: relative;
 
-.wheel {
-    display:block;
-    //position: relative;
-    margin-top: 50px;
-    width: 500px;
-    height: 500px;
-    margin-bottom: 50px;
-}
+	.wheel {
+    	display:block;
+    	margin-top: 50px;
+    	width: 500px;
+    	height: 500px;
+    	margin-bottom: 50px;
+		position: relative;
 
-#indicator {
-    width : 480px;
-    height: 50px;
-}
-#displayRes {
-    text-align: center;
-}
-#button {
-    display:block;
-    margin-left:auto;
-    margin-right:auto;
-    background: none;
-    border: none;
-}
+		.pie-wheel {
+			width: 100%;
+		}
 
-@keyframes rotateAnim {
-    from {transform: rotateZ(0);}
-    to {transform: rotateZ(360deg);}
+		.arrow {
+			width: 90px;
+			position: absolute;
+			top: -85px;
+			left: 40%;
+			rotate: 209deg;
+			z-index: 99;
+		}
+	}
+
+	.controls {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+
+		#gradient {
+			place-self: center;
+			width: 40px;
+			height: 240px;
+			display: block;
+			background: linear-gradient(red, orange, green);
+			position: relative;
+			border-radius: 7px;
+			overflow: hidden;
+
+			#cursor {
+				position: absolute;
+				height: 6px;
+				width: 100%;
+				background-color: white;
+				top: 0;
+			}
+		}
+	}
+	.handle {
+		align-self: center;
+		justify-self: left;
+
+		#displayRes {
+    		text-align: center;
+		}
+		#button {
+    		display:block;
+    		margin-left:auto;
+    		margin-right:auto;
+    		background: none;
+    		border: none;
+		}
+
+	}
+
+
+  	@keyframes top {
+      0% {top: 0%;}
+      50% {top: 100%;}
+      100% {top: 0%;}
+  	}
 }
-
-#bar {
-    /* font-size: 10px */
-    width: 30em;
-    height: 2em;
-    border-radius: 0.5em;
-    position: relative;
-    background: #f2f2f2;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
-  }
-
-#bar #percentage {
-    width: 0%;
-    position: absolute;
-    font-size: 1em;
-    background: #7be245;
-    height: 2em;
-    border-radius: 0.5em;
-  }
-
-  @keyframes width {
-      from {width: 0%;}
-      to {width: 100%;}
-  }
 
 </style>

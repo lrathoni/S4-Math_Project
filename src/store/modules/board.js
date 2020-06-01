@@ -1,4 +1,4 @@
-import { isBroken, Beta } from '@/math/VariablesAleatoires'
+import { isBroken, Beta2 } from '@/math/VariablesAleatoires'
 
 const state = {
 	width: 12,
@@ -17,7 +17,8 @@ const state = {
 			brocken: Boolean
 		}*/
 	],
-	weather: 'sun', // NOTE possible values: 'sun' || 'clouds' || 'rain'
+	weather: 'sun', // NOTE possible values: 'sun' || 'clouds' || 'rain',
+	nextWeather: null
 }
 
 const mutations = {
@@ -72,12 +73,17 @@ const mutations = {
 	},
 
 	setBrockenBuilding(state, id) {
-		const square = state.squares.find( square => square.id === id );
-		square.brocken = true;
-	}
+		const square = state.squares.find( square => square.id === id )
+		square.brocken = true
+	},
+	changeBuildingCosts(state, percentage) {
+		state.squares.forEach(square =>
+			square.building.price += square.building.price * percentage )
+	},
 }
 
 const actions = {
+
 	removeBuilding(context, id) {
 		const square = context.state.squares.find(square => square.id === id);
 		console.log(square.building.price, context.rootState.player.money)
@@ -154,19 +160,31 @@ const actions = {
 		const w = ["sun", "sun", "sun", "sun", "sun", "sun", "sun", "rain", "clouds", "clouds", "clouds"]
 		const rand = Math.floor(Math.random() * 11)
 
-		const duration = 1000 * Beta(5, 30, 4)
+		const duration = 1000 * Beta2(5, 30, 2, 5)
 		//const duration = 1000 *  (Math.random() * 25 + 5)
 		context.dispatch('changeWeather', w[rand])
 		//context.dispatch('stats/incrementWeatherTime', {
 			//type: w[rand],
 			//duration: duration
 		//}, { root: true })
-		setTimeout(() => context.dispatch('weatherUpdater'), duration)
+		context.state.nextWeather = setTimeout(() => context.dispatch('weatherUpdater'), duration)
+	},
+
+	manualWeather(context, weather, duration) {
+		clearTimeout(context.state.nextWeather)
+		debugger
+		if (duration === undefined)
+			 duration = 1000 * Beta2(5, 30, 4)
+
+		context.dispatch('changeWeather', weather)
+		context.state.nextWeather = setTimeout(() => context.dispatch('weatherUpdater'), duration)
 	},
 
 	changeWeather(context, newWeather) {
 		if (newWeather === 'rain') {
-			context.dispatch('visitors/moveVisitorsInOutdoorBuildingsToExit', null, { root: true });
+			context.dispatch('visitors/moveVisitorsInOutdoorBuildingsToExit', null, {
+				root: true
+			});
 			context.commit('clearRunningOutdoorBuildings');
 			context.commit('freeOutdoorBuildings');
 		}

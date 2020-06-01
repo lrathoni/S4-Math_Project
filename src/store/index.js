@@ -4,6 +4,7 @@ import buildings from './modules/buildings';
 import player from './modules/player';
 import board from './modules/board';
 import visitors from './modules/visitors'
+import roulette from './modules/roulette'
 
 Vue.use(Vuex);
 
@@ -45,7 +46,8 @@ export default new Vuex.Store({
 		buildings,
 		player,
 		board,
-		visitors
+		visitors,
+		roulette
 	}
 })
 
