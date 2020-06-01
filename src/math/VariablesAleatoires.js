@@ -19,15 +19,10 @@ export const BinomialVariable = {
 
 // return an array with the probability of each event
 function probability(n,p) {
-    let total=0
     var tab = []
     for (let k=0; k<=n; ++k) {
         tab.push(k_parmi_n(k,n) * Math.pow(p,k) * Math.pow(1-p,n-k))
-        total += tab[k]
-        //console.log("p("+ k + ") = " + tab[k])
     }
-    console.log("p(omega) = " + total)
-    console.log("tab binom size = " + tab.size())
     return tab
 }
 
@@ -40,9 +35,6 @@ function factorielle(n) {
 }
 
 function k_parmi_n(k,n) {
-    if (k>n) {
-        throw console.error("error factorielle k>n")
-    }
     if (k == n || k ==0) {
         return 1
     }

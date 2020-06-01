@@ -5,10 +5,10 @@ import {findEventBinom} from "@/math/VariablesAleatoires"
 const state = {
 	entries: [
 		{
-			message: "C'est la crise, les prix des installations augmentent de 25%",
+			message: "Due to engineering improvements, building costs rise +25%",
 			callback: {
 				type: "commit",
-				method: "board/changeBuildingCosts",
+				method: "buildings/changeBuildingCosts",
 				param: 0.25
 			},
 			position: 1,
@@ -29,7 +29,9 @@ const state = {
 			callback: {
 				type: "dispatch",
 				method: "board/manualWeather",
-				param: "rain"
+				param: {
+					weather: "rain",
+				}
 			},
 			position: 2,
 			type: "malus"
@@ -39,19 +41,22 @@ const state = {
 			callback: {
 				type: "dispatch",
 				method: "board/manualWeather",
-				param: ["sun", 180 * 1000]
+				param: {
+					weather: "clouds",
+					duration: 180 * 1000
+				}
 			},
 			position: 9,
 			type: "malus"
 		},
 		{
-			message: "On ne peut pas toujours gagner quelque-chose",
+			message: "Sorry, try your luck next time",
 			callback: null,
 			position: 5,
 			type: "none"
 		},
 		{
-			message: "T'as rien gagné, mais t'as rien perdu",
+			message: "You didn't won or lost anything",
 			callback: null,
 			position: 8,
 			type: "none"
@@ -61,27 +66,30 @@ const state = {
 			callback: {
 				type: "dispatch",
 				method: "board/manualWeather",
-				param: ["sun", 50 * 1000]
+				param: {
+					weather: "sun",
+					duration: 50 * 1000
+				}
 			},
 			position: 6,
 			type: "bonus"
 		},
 		{
-			message: "Tata Monique est passé te voir ce WE, tu commences avec 100 pièces de plus !",
+			message: "Your aunt is giving you 50 credits",
 			callback: {
 				type: "commit",
 				method: "player/addAmountToMoney",
-				param: 100
+				param: 50
 			},
 			position: 0,
 			type: "bonus"
 		},
 		{
-			message: "Bon anniversaire vous gagnez 1000",
+			message: "Happy birthday my friend, here is 1500 credits",
 			callback: {
 				type: "commit",
 				method: "player/addAmountToMoney",
-				param: 1000
+				param: 1500
 			},
 			position: 7,
 			type: "bonus"
@@ -90,7 +98,7 @@ const state = {
 			message: "Big discount, building costs reduced by 30%!",
 			callback: {
 				type: "commit",
-				method: "board/changeBuildingCosts",
+				method: "buildings/changeBuildingCosts",
 				param: -0.30
 			},
 			position: 4,
@@ -118,7 +126,7 @@ const actions = {
 const getters = {
 	RESULT(state)  {
 		return p => {
-			return state.entries[findEventBinom(state.entries.length, p)]
+			return state.entries[findEventBinom(state.entries.length - 1, p)]
 		}
 	}
 }

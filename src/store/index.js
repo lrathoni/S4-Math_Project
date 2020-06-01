@@ -31,6 +31,9 @@ const actions = {
 	},
 	stop(context) {
 		//context.dispatch('stats/computeDuration');
+	},
+	applyCallback(context, payload) {
+		context[payload.type](payload.method, payload.param)
 	}
 }
 

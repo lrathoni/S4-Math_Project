@@ -1,15 +1,15 @@
 <template>
   <div id="app">
 	  <transition name="fade">
-	  	  <div v-show="$store.state.board.weather !== 'sun'" class="weather-container">
-	  	  	  <img v-show="$store.state.board.weather === 'rain'" class="rain" src="/images/rain.gif" alt="">
-	  	  	  <img class="clouds" src="/images/cloud_texture.jpg" alt="">
-	  	  </div>
+		  <div v-show="$store.state.board.weather !== 'sun'" class="weather-container">
+			  <img v-show="$store.state.board.weather === 'rain'" class="rain" src="/images/rain.gif" alt="">
+			  <img class="clouds" src="/images/cloud_texture.jpg" alt="">
+		  </div>
 	  </transition>
 	  <div>
-	  	  <h2>Happiness</h2>
-	  	  <Happiness />
-	  	  <Money />
+		  <h2>Happiness</h2>
+		  <Happiness />
+		  <Money />
 		  <Tickets />
 		  <!--{{ $store.state.player.happiness }}-->
 		  <GoneVisitors />
@@ -21,6 +21,10 @@
 		  <div class="building-cards">
 			  <BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
 		  </div>
+		  <transition name="slide">
+			  <Roulette class="roulette-container" v-if="roulette" @close="closeRoulette()"/>
+		  </transition>
+		  
 	  </div>
   </div>
 </template>
@@ -28,6 +32,7 @@
 <script>
 import Board from './components/Board.vue'
 import Money from './components/Money.vue'
+import Roulette from './components/Roulette.vue'
 import BuildingCard from './components/BuildingCard.vue'
 import GoneVisitors from './components/GoneVisitors'
 import Tickets from './components/Tickets'
@@ -35,15 +40,21 @@ import Happiness from './components/Happiness'
 
 export default {
   name: 'App',
+	data() {
+		return {
+			roulette: false
+		}
+	},
   components: {
-    Board,
+	  Roulette,
+	  Board,
 	  GoneVisitors,
 	  BuildingCard,
 	  Tickets,
 	  Happiness,
 	  Money
   },
-  	computed: {
+	computed: {
 		buildings() {
 			//console.log(Object.keys(this.$store.getters['buildings/ALL_BUILDINGS']));
 			return this.$store.state.buildings.buildings;
@@ -66,15 +77,19 @@ export default {
 		}
 	},
 	methods: {
-		//incrementSize(type, amount) {
-			//this.$store.commit('updateSize', { type, amount });
-		//},
+		closeRoulette() {
+			this.roulette = false
+			setTimeout(() => this.roulette = true, 40000)
+		}
 	},
 	beforeCreate() {
 		/* INFO initializing the available buildings */
 		const availableBuildings = [ 'wheel', 'cinema', 'food', 'drink', 'roller-coaster' ];
 		this.$store.dispatch('init', availableBuildings);
 	},
+	mounted() {
+		this.roulette = true
+	}
 }
 </script>
 
@@ -83,11 +98,21 @@ export default {
 	z-index: 99;
 }
 #app {
-  	font-family: Avenir, Helvetica, Arial, sans-serif;
-  	-webkit-font-smoothing: antialiased;
-  	-moz-osx-font-smoothing: grayscale;
-  	text-align: center;
-  	color: #2c3e50;
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	color: #2c3e50;
+
+	.roulette-container {
+		width: 500px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.86);
+		box-shadow: 0 0 18px #0009;
+	}
 
 	h2 {
 		margin-top: 50px;
@@ -181,5 +206,13 @@ body {
 	100% {
 		opacity: 1;
 	}
+}
+
+.slide-enter-active, .slide-leave-active {
+	transition: opacity .5s;
+}
+
+.slide-enter, .slide-leave-to {
+  opacity: 0;
 }
 </style>

@@ -9,6 +9,10 @@ const mutations = {
 	loadBuilding(state, payload) {
 		state.buildings[payload.buildingName] = require(`../../assets/buildings/${payload.buildingName}.json`);
 	},
+	changeBuildingCosts(state, percentage) {
+		state.buildings.forEach(building =>
+			building.building.price += Math.floor(building.building.price * percentage))
+	},
 }
 
 const actions = {

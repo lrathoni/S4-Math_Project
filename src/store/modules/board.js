@@ -76,17 +76,12 @@ const mutations = {
 		const square = state.squares.find( square => square.id === id )
 		square.brocken = true
 	},
-	changeBuildingCosts(state, percentage) {
-		state.squares.forEach(square =>
-			square.building.price += square.building.price * percentage )
-	},
 }
 
 const actions = {
 
 	removeBuilding(context, id) {
 		const square = context.state.squares.find(square => square.id === id);
-		console.log(square.building.price, context.rootState.player.money)
 		if (square.building.price / 2 <= context.rootState.player.money) {
 			const removalPrice = square.building.price * 0.33
 			context.commit('removeBuilding', id);
@@ -170,14 +165,12 @@ const actions = {
 		context.state.nextWeather = setTimeout(() => context.dispatch('weatherUpdater'), duration)
 	},
 
-	manualWeather(context, weather, duration) {
+	manualWeather(context, payload) {
 		clearTimeout(context.state.nextWeather)
-		debugger
-		if (duration === undefined)
-			 duration = 1000 * Beta2(5, 30, 4)
-
-		context.dispatch('changeWeather', weather)
-		context.state.nextWeather = setTimeout(() => context.dispatch('weatherUpdater'), duration)
+		if (payload.duration === undefined)
+			 payload.duration = 1000 * Beta2(5, 30, 2, 5)
+		context.dispatch('changeWeather', payload.weather)
+		context.state.nextWeather = setTimeout(() => context.dispatch('weatherUpdater'), payload.duration)
 	},
 
 	changeWeather(context, newWeather) {
