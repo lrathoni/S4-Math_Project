@@ -30,18 +30,12 @@
 
 <script>
     import {BinomialVariable, findEventBinom, Beta,Beta2, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
-    import {BinomialVariable, findEventBinom, Beta, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
     for (let i=0; i<150; i++) {
         console.log(Beta(5,30,4))
     }
     
-import LongPress from 'vue-directive-long-press'
+	import LongPress from 'vue-directive-long-press'
 
-    import {BinomialVariable, findEventBinom, Beta, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
-    for (let i=0; i<150; i++) {
-        console.log(Beta(5,30,4))
-    }
-    
     export default {
         name : "Test",
 		  directives: { 'long-press': LongPress },
