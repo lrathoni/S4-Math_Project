@@ -27,11 +27,7 @@
 </template>
 
 <script>
-    import {BinomialVariable, findEventBinom, Beta, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
-    for (let i=0; i<150; i++) {
-        console.log(Beta(5,30,4))
-    }
-    
+    import {BinomialVariable, findEventBinom, Beta,Beta2, Poisson, isBroken , wheelTime} from './math/VariablesAleatoires.js'
     export default {
         name : "Test",
         data() { return {"resultat" : "Clic pour démarrer, sur la flèche hein !",

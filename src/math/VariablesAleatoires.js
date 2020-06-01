@@ -13,8 +13,8 @@ export const BinomialVariable = {
                 "On ne peut pas toujours gagner quelque-chose",
                 "Malheureusement, tu vas devoir fermer plus tôt aujourd'hui",
                 "Ton fournisseur t'as fait une fleur et a garanti une réinstallation en cas de panne pour chaque bâtiment"],
-    n : 10 , // eventTab.size()
-    p : 0.8, //probability chosen
+    n : 9 , // eventTab.size()
+    p : 0, //probability chosen => it will be redefine
 }
 
 // return an array with the probability of each event
@@ -26,7 +26,8 @@ function probability(n,p) {
         total += tab[k]
         //console.log("p("+ k + ") = " + tab[k])
     }
-    //console.log("p(omega) = " + total)
+    console.log("p(omega) = " + total)
+    console.log("tab binom size = " + tab.size())
     return tab
 }
 
@@ -58,7 +59,7 @@ export function findEventBinom(n,p) {
         k++
         proba += tab[k]
     }
-    return k==10 ? k-1 : k
+    return k==9 ? k-1 : k
 }
 
 
@@ -69,13 +70,39 @@ export function findEventBinom(n,p) {
 //Here we'll  X^r ~ B(1/r, 1) --> Density graph ~ decresed line
 
 // a>0, b>0, r>0 to respect the condition
+// faire B(a,b) ==> b>1
+// alpha =1 bêta = 1
 export function Beta(a, b ,r) {
     var t = Math.random()
     //return a number between [a,b] ** r
-    var x = Math.pow( Math.pow(a,1/r) + ( Math.pow(b, 1/r) - Math.pow(a,1/r) )*t, r)
+    var x = a + (b - a)* Math.pow(t,r)
+    // (a^1/r + (b^1/r-a^1/r)t)^r
     return x
 }
 
+/*
+gamma (1, lambda) ~ exp param lambda => -(1/lambda) * Math.log(t), t ~ U([0,1])
+gamma ( alpha , lambda) = sum alpha fois (-(1/lambda) * Math.log(t))
+Beta (alpha, beta ) ~ X / (X + Y) , X ~ G(alpha, lamda), Y ~ G(beta, lamda)
+Beta(alpha, beta) =  (sum (alpha times) (-(1/lambda) * Math.log(t))) / sum (alpha + beta times)  (-(1/lambda) * Math.log(t))
+*/ 
+export function Beta2(a, b, alpha, beta) {
+    const gammaX = gamma(alpha, 1)
+    const gammaY = gamma(beta, 1)
+    const f = gammaX / (gammaX + gammaY)
+    //return a number between [a,b] ** r
+    return a + (b-a) * f 
+}
+
+export function gamma(alpha,lambda) {
+    let t=0
+    let sumExp = 0
+    for (let i = 0; i <alpha; i++ ) {
+        t = Math.random();
+        sumExp += Math.log(t)
+    }
+    return -lambda * sumExp
+}
 
 
 //Number of visitors
