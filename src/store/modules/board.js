@@ -170,6 +170,7 @@ const actions = {
 		if (payload.duration === undefined)
 			 payload.duration = 1000 * Beta2(5, 30, 2, 5)
 		context.dispatch('changeWeather', payload.weather)
+		console.log(payload.duration)
 		context.state.nextWeather = setTimeout(() => context.dispatch('weatherUpdater'), payload.duration)
 	},
 

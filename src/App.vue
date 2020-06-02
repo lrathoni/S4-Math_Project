@@ -19,7 +19,7 @@
 		  <!--</fieldset>-->
 		  <Board />
 		  <div class="building-cards">
-			  <BuildingCard v-for="(building, id) in buildings" :key="id" :building="building" />
+			  <BuildingCard v-for="(building, id) in $store.state.buildings.buildings" :key="id" :building="building" />
 		  </div>
 		  <transition name="slide">
 			  <Roulette class="roulette-container" v-if="roulette" @close="closeRoulette()"/>
@@ -55,10 +55,6 @@ export default {
 	  Money
   },
 	computed: {
-		buildings() {
-			//console.log(Object.keys(this.$store.getters['buildings/ALL_BUILDINGS']));
-			return this.$store.state.buildings.buildings;
-		},
 		playerMoney: {
 			set(money) {
 				this.$store.commit('player/setMoney', money);

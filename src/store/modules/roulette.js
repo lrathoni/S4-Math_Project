@@ -75,11 +75,11 @@ const state = {
 			type: "bonus"
 		},
 		{
-			message: "Your aunt is giving you 50 credits",
+			message: "Your aunt is giving you 100 credits",
 			callback: {
 				type: "commit",
 				method: "player/addAmountToMoney",
-				param: 50
+				param: 100
 			},
 			position: 0,
 			type: "bonus"

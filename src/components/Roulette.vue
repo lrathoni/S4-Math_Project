@@ -13,7 +13,6 @@
 						  @click="stop"
 						  type="button" value="Go">
                 <img ref="image" class="arrowWheel" src="/images/handle.png" alt="">
-            	 <h4 id="displayRes">Click and maintain to adjust your luck</h4>
             </button>
         </div>
 		 </div>
@@ -71,6 +70,7 @@ import LongPress from 'vue-directive-long-press'
 					  this.$modal.show('hello-world')
 					  if (this.result.callback !== null)
 						  this.$store.dispatch('applyCallback', this.result.callback)
+						  //this.$store.dispatch('applyCallback', this.$store.state.roulette.entries[3].callback)
 				  }, 2500)
 			  },
         },

@@ -18,14 +18,14 @@ const actions = {
 	 * It must match a building's JSON filename
 	 * */
 	init(context, availableBuildings) {
-		availableBuildings.forEach(buildingName => context.commit('buildings/loadBuilding', { buildingName }));
+		//availableBuildings.forEach(buildingName => context.commit('buildings/loadBuilding', { buildingName }));
 
 		/* INFO automatically set the first building as current selection */
 		context.commit('player/setSelected', context.state.buildings.buildings[availableBuildings[0]]);
 
 		context.dispatch('visitors/initVisitorFlow');
 
-		setTimeout(() => context.dispatch('board/weatherUpdater'), 5000);
+		context.dispatch('board/weatherUpdater');
 
 		//context.state.stats.gameDuration = Date.now();
 	},
